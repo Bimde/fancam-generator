@@ -1,2 +1,2 @@
 # Fancam Generator
-Generating focus cams from full group videos. For example, generating _ from _.
+Generating focus videos from full group videos. For example, generating _ from _.
