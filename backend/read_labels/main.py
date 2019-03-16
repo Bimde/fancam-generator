@@ -7,7 +7,7 @@ import sys
 
 
 class VideoDetect:
-    jobId = ''
+    jobId = 'a2ad173ff2d498e84eea9810078597801b457ad8eb57e964a3c3690224e9900a'
     rek = boto3.client('rekognition', 'us-east-1')
     queueUrl = 'https://sqs.us-east-1.amazonaws.com/744292932026/FullGroupVideos'
     roleArn = 'arn:aws:iam::744292932026:role/RekognitionServiceRole'
@@ -16,14 +16,17 @@ class VideoDetect:
     video = 'ITZY.mp4'
 
     def main(self):
+        # triggerNewJob()
+        self.GetResultsPersons(self.jobId)
 
+    def triggerNewJob(self):
         jobFound = False
         sqs = boto3.client('sqs', 'us-east-1')
        
 
         #=====================================
-        response = self.rek.start_label_detection(Video={'S3Object': {'Bucket': self.bucket, 'Name': self.video}},
-                                         NotificationChannel={'RoleArn': self.roleArn, 'SNSTopicArn': self.topicArn})
+        response = self.rek.start_person_tracking(Video={'S3Object':{'Bucket':self.bucket,'Name':self.video}}, 
+            NotificationChannel={'RoleArn':self.roleArn, 'SNSTopicArn':self.topicArn})
         #=====================================
 
         print(response)
@@ -55,7 +58,7 @@ class VideoDetect:
                         print('Matching Job Found:' + rekMessage['JobId'])
                         jobFound = True
                         #=============================================
-                        self.GetResultsLabels(rekMessage['JobId'])
+                        self.GetResultsPersons(rekMessage['JobId'])
                         #=============================================
 
                         sqs.delete_message(QueueUrl=self.queueUrl,
@@ -92,15 +95,16 @@ class VideoDetect:
                 print("Timestamp: " + str(labelDetection['Timestamp']))
                 print("   Label: " + label['Name'])
                 print("   Confidence: " +  str(label['Confidence']))
-                print("   Instances:")
-                for instance in label['Instances']:
-                    print ("      Confidence: " + str(instance['Confidence']))
-                    print ("      Bounding box")
-                    print ("        Top: " + str(instance['BoundingBox']['Top']))
-                    print ("        Left: " + str(instance['BoundingBox']['Left']))
-                    print ("        Width: " +  str(instance['BoundingBox']['Width']))
-                    print ("        Height: " +  str(instance['BoundingBox']['Height']))
-                    print()
+                if 'Instances' in label:
+                    print("   Instances:")
+                    for instance in label['Instances']:
+                        print ("      Confidence: " + str(instance['Confidence']))
+                        print ("      Bounding box")
+                        print ("        Top: " + str(instance['BoundingBox']['Top']))
+                        print ("        Left: " + str(instance['BoundingBox']['Left']))
+                        print ("        Width: " +  str(instance['BoundingBox']['Width']))
+                        print ("        Height: " +  str(instance['BoundingBox']['Height']))
+                        print()
                 print()
                 print ("   Parents:")
                 for parent in label['Parents']:
@@ -112,7 +116,38 @@ class VideoDetect:
                 else:
                     finished = True
 
+    def GetResultsPersons(self, jobId):
+        maxResults = 10
+        paginationToken = ''
+        finished = False
 
+        while finished == False:
+            response = self.rek.get_person_tracking(JobId=jobId,
+                                            MaxResults=maxResults,
+                                            NextToken=paginationToken)
+
+            # print(response)
+            print(response['VideoMetadata']['Codec'])
+            print(str(response['VideoMetadata']['DurationMillis']))
+            print(response['VideoMetadata']['Format'])
+            print(response['VideoMetadata']['FrameRate'])
+
+            for personDetection in response['Persons']:
+                person = personDetection['Person']
+                print('Index: ' + str(person['Index']))
+                print('Timestamp: ' + str(personDetection['Timestamp']))
+                if 'BoundingBox' in person:
+                    print ("      Bounding box")
+                    print ("        Top: " + str(person['BoundingBox']['Top']))
+                    print ("        Left: " + str(person['BoundingBox']['Left']))
+                    print ("        Width: " +  str(person['BoundingBox']['Width']))
+                    print ("        Height: " +  str(person['BoundingBox']['Height']))
+                print()
+
+            if 'NextToken' in response:
+                paginationToken = response['NextToken']
+            else:
+                finished = True
 if __name__ == "__main__":
 
     analyzer=VideoDetect()
