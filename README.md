@@ -1,2 +1,2 @@
 # Fancam Generator
-Generating focus videos from full group videos. For example, generating _ from _.
+Generating videos focused on a single person from videos that contain multiple people or are just zoomed out.
