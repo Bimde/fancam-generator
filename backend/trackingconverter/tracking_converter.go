@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/rekognition"
@@ -11,8 +12,9 @@ import (
 )
 
 const (
-	awsRegion    string = "us-east-1"
-	functionName string = "tracking_converter"
+	awsRegion       string = "us-east-1"
+	functionName    string = "tracking_converter"
+	tempPersonIndex        = 0
 )
 
 var svc *rekognition.Rekognition
@@ -28,9 +30,10 @@ type RekSNSNotification struct {
 
 func process(notification *RekSNSNotification) error {
 	var (
-		maxResults      int64 = 1000
+		maxResults      int64 = 100
 		paginationToken *string
 		finished        = false
+		totalCount      = 0
 		count           = 0
 	)
 	for !finished {
@@ -47,12 +50,13 @@ func process(notification *RekSNSNotification) error {
 		log.Println(results.VideoMetadata)
 
 		for _, p := range results.Persons {
-			count++
+			totalCount++
 
 			person := p.Person
-			if person == nil {
+			if person == nil || *person.Index != tempPersonIndex {
 				continue
 			}
+			count++
 			log.Println("Person")
 
 			boundingBox := person.BoundingBox
@@ -60,6 +64,7 @@ func process(notification *RekSNSNotification) error {
 				continue
 			}
 
+			log.Println("	Timestamp: ", *p.Timestamp)
 			log.Println("	Bounding Box")
 			log.Printf("		Top: %f", *boundingBox.Top)
 			log.Printf("		Left: %f", *boundingBox.Left)
@@ -73,7 +78,8 @@ func process(notification *RekSNSNotification) error {
 			paginationToken = results.NextToken
 		}
 	}
-	log.Println("Number of PersonDetection objects: ", count)
+	log.Println("Number of PersonDetection objects: ", totalCount)
+	log.Printf("Number of PersonDetection objects for index %d: %d", tempPersonIndex, count)
 
 	return nil
 }
@@ -107,36 +113,33 @@ func handle(ctx context.Context, snsEvent events.SNSEvent) (events.APIGatewayPro
 	return events.APIGatewayProxyResponse{code, headers, nil, string(response), false}, nil
 }
 
-//func main() {
-//	session, err := session.NewSession(&aws.Config{
-//		Region: aws.String(awsRegion)},
-//	)
-//
-//	// Create DynamoDB client
-//	svc = rekognition.New(session)
-//
-//	if err != nil {
-//		log.Println("Error initiating " + functionName + " lambda function ", err.Error())
-//	} else {
-//		log.Println("Successfully initiated " + functionName + " lambda function")
-//		lambda.Start(handle)
-//	}
-//}
-
 func main() {
 	session, err := session.NewSession(&aws.Config{
 		Region: aws.String(awsRegion)},
 	)
-	if err != nil {
-		log.Println(err)
-		panic(err)
-	}
-
-	// Create DynamoDB client
 	svc = rekognition.New(session)
 
-	err = process(&RekSNSNotification{JobId: "51a3a9bed1dca4015708e18b24c884ecde6212fb738870500bbd440ad284e2f1"})
 	if err != nil {
-		log.Println(err)
+		log.Println("Error initiating "+functionName+" lambda function ", err.Error())
+	} else {
+		log.Println("Successfully initiated " + functionName + " lambda function")
+		lambda.Start(handle)
 	}
 }
+
+//func _main() {
+//	session, err := session.NewSession(&aws.Config{
+//		Region: aws.String(awsRegion)},
+//	)
+//	if err != nil {
+//		log.Println(err)
+//		panic(err)
+//	}
+//
+//	svc = rekognition.New(session)
+//
+//	err = process(&RekSNSNotification{JobId: "51a3a9bed1dca4015708e18b24c884ecde6212fb738870500bbd440ad284e2f1"})
+//	if err != nil {
+//		log.Println(err)
+//	}
+//}
