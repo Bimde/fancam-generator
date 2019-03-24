@@ -4,6 +4,3 @@ Generating videos focused on a single person from videos that contain multiple p
 ## Architecture Diagram
 
 ![Diagram](https://raw.githubusercontent.com/Bimde/FancamGenerator/master/diagrams/fancam-generator.png)
-
-## Design Document
-http://bit.ly/fancam-generator-design-doc
