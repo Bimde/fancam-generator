@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"log"
+
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/rekognition"
-	"log"
 )
 
 const (
@@ -24,7 +25,7 @@ type ResponseBody struct {
 }
 
 type RekSNSNotification struct {
-	JobId  string `json:"JobId"`
+	JobID  string `json:"JobId"`
 	Status string `json:"Status"`
 }
 
@@ -38,7 +39,7 @@ func process(notification *RekSNSNotification) error {
 	)
 	for !finished {
 		x := rekognition.GetPersonTrackingInput{
-			JobId:      aws.String(notification.JobId),
+			JobId:      aws.String(notification.JobID),
 			MaxResults: &maxResults,
 			NextToken:  paginationToken,
 		}
