@@ -4,20 +4,23 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
+	"time"
+
+	log "github.com/sirupsen/logrus"
+
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"log"
-	"strings"
-	"time"
 )
 
 const (
 	awsRegion            = "us-east-1"
 	bucket               = "fancamgenerator"
 	preSignExpiryMinutes = 15
+	loggingName          = "lambda"
 )
 
 var (
@@ -34,7 +37,8 @@ type ResponseBody struct {
 }
 
 func handle(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	log.Println("context ", ctx)
+	log := getLogger("handle")
+	log.Info("context ", ctx)
 	headers := map[string]string{
 		"Access-Control-Allow-Origin":  "*",
 		"Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
@@ -43,7 +47,7 @@ func handle(ctx context.Context, request events.APIGatewayProxyRequest) (events.
 	var body RequestBody
 	err := json.Unmarshal([]byte(request.Body), &body)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 		return events.APIGatewayProxyResponse{
 			StatusCode:        500,
 			Headers:           headers,
@@ -53,18 +57,18 @@ func handle(ctx context.Context, request events.APIGatewayProxyRequest) (events.
 		}, nil
 	}
 
-	videoId := getKey(body.UserId)
+	videoID := getKey(body.UserId)
 
 	req, _ := svc.PutObjectRequest(&s3.PutObjectInput{
 		Bucket: aws.String(bucket),
-		Key:    aws.String(videoId),
+		Key:    aws.String(videoID),
 		Body:   strings.NewReader("EXPECTED CONTENTS"),
 	})
 
 	url, err := req.Presign(preSignExpiryMinutes * time.Minute)
 
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 		return events.APIGatewayProxyResponse{
 			StatusCode:        500,
 			Headers:           headers,
@@ -74,12 +78,12 @@ func handle(ctx context.Context, request events.APIGatewayProxyRequest) (events.
 		}, nil
 	}
 
-	log.Println("The URL is: ", url)
+	log.Error("The URL is: ", url)
 
 	code := 200
-	response, err := json.Marshal(ResponseBody{PreSignedURL: url, VideoId: videoId})
+	response, err := json.Marshal(ResponseBody{PreSignedURL: url, VideoId: videoID})
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 		response = []byte("Internal Server Error")
 		code = 500
 	}
@@ -101,13 +105,20 @@ func main() {
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String(awsRegion)},
 	)
-
 	svc = s3.New(sess)
 
+	log := getLogger("main")
+
 	if err != nil {
-		log.Println("Error initiating pre_signed_upload lambda function ", err.Error())
+		log.Panic("Error initiating session ", err)
 	} else {
-		log.Println("Successfully initiated pre_signed_upload lambda function")
+		log.Info("Successfully initiated session")
 		lambda.Start(handle)
 	}
+}
+
+func getLogger(method string) *log.Entry {
+	return log.WithFields(log.Fields{
+		"method": fmt.Sprintf("%s#%s", loggingName, method),
+	})
 }

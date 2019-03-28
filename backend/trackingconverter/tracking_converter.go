@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"log"
+	"fmt"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -16,6 +18,7 @@ const (
 	awsRegion       string = "us-east-1"
 	functionName    string = "tracking_converter"
 	tempPersonIndex        = 0
+	loggingName            = "lambda"
 )
 
 var svc *rekognition.Rekognition
@@ -30,6 +33,7 @@ type RekSNSNotification struct {
 }
 
 func process(notification *RekSNSNotification) error {
+	log := getLogger("process")
 	var (
 		maxResults      int64 = 100
 		paginationToken *string
@@ -48,7 +52,7 @@ func process(notification *RekSNSNotification) error {
 			return err
 		}
 
-		log.Println(results.VideoMetadata)
+		log.Info(results.VideoMetadata)
 
 		for _, p := range results.Persons {
 			totalCount++
@@ -79,25 +83,25 @@ func process(notification *RekSNSNotification) error {
 			paginationToken = results.NextToken
 		}
 	}
-	log.Println("Number of PersonDetection objects: ", totalCount)
-	log.Printf("Number of PersonDetection objects for index %d: %d", tempPersonIndex, count)
-
+	log.Info("Number of PersonDetection objects: ", totalCount)
+	log.WithField("index", tempPersonIndex).Info("Number of PersonDetection objects for index: ", count)
 	return nil
 }
 
 func handle(ctx context.Context, snsEvent events.SNSEvent) (events.APIGatewayProxyResponse, error) {
-	log.Println("Post: ", snsEvent)
-	log.Println("context ", ctx)
+	log := getLogger("handle")
+	log.Info("Post: ", snsEvent)
+	log.Info("context ", ctx)
 	headers := map[string]string{"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"}
 
 	var notification *RekSNSNotification
 	jsonParseError := json.Unmarshal([]byte(snsEvent.Records[0].SNS.Message), notification)
 	if jsonParseError != nil {
-		log.Println(jsonParseError)
+		log.Error(jsonParseError)
 		return events.APIGatewayProxyResponse{500, headers, nil, "Internal Server Error", false}, nil
 	}
 
-	log.Println("SNS event received: ", notification)
+	log.Info("SNS event received: ", notification)
 
 	process(notification)
 
@@ -106,7 +110,7 @@ func handle(ctx context.Context, snsEvent events.SNSEvent) (events.APIGatewayPro
 	// TODO change response
 	response, jsonBuildError := json.Marshal(ResponseBody{Response: "TODO"})
 	if jsonBuildError != nil {
-		log.Println(jsonBuildError)
+		log.Error(jsonBuildError)
 		response = []byte("Internal Server Error")
 		code = 500
 	}
@@ -120,12 +124,20 @@ func main() {
 	)
 	svc = rekognition.New(session)
 
+	log := getLogger("main")
+
 	if err != nil {
-		log.Println("Error initiating "+functionName+" lambda function ", err.Error())
+		log.Panic("Error initiating session ", err)
 	} else {
-		log.Println("Successfully initiated " + functionName + " lambda function")
+		log.Info("Successfully initiated session")
 		lambda.Start(handle)
 	}
+}
+
+func getLogger(method string) *log.Entry {
+	return log.WithFields(log.Fields{
+		"method": fmt.Sprintf("%s#%s", loggingName, method),
+	})
 }
 
 //func _main() {
@@ -133,7 +145,7 @@ func main() {
 //		Region: aws.String(awsRegion)},
 //	)
 //	if err != nil {
-//		log.Println(err)
+//		log.Error(err)
 //		panic(err)
 //	}
 //
@@ -141,6 +153,6 @@ func main() {
 //
 //	err = process(&RekSNSNotification{JobId: "51a3a9bed1dca4015708e18b24c884ecde6212fb738870500bbd440ad284e2f1"})
 //	if err != nil {
-//		log.Println(err)
+//		log.Error(err)
 //	}
 //}
