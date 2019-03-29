@@ -50,7 +50,7 @@ func TestCreateProject(t *testing.T) {
 }
 
 func projectsSetup() func() {
-	project = &Project{Name: "Sample Name", JSON: "JSON"}
+	project = &Project{Name: "Sample Name", JSON: "{}"}
 	return projectsShutdown
 }
 

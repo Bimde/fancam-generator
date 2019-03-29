@@ -26,9 +26,9 @@ func (o *OpenShot) GetProjects() (*[]Project, error) {
 	log.Info("Response: ", resp)
 	log.Info("Response Body: ", resp.Body)
 
-	projects := &Projects{}
+	var projects Projects
 	bytes, err := ioutil.ReadAll(resp.Body)
-	err = json.Unmarshal(bytes, projects)
+	err = json.Unmarshal(bytes, &projects)
 
 	if err != nil {
 		log.Error("error unmarshalling projects ", err)

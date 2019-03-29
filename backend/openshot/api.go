@@ -86,3 +86,13 @@ type Export struct {
 	DateCreated  string      `json:"date_created"`
 	DateUpdated  string      `json:"date_updated"`
 }
+
+type Point struct {
+	Co    Cord `json:"co"`
+	Inter int  `json:"interpolation"`
+}
+
+type Cord struct {
+	X float32 `json:"X"`
+	Y float32 `json:"Y"`
+}
