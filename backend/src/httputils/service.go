@@ -6,16 +6,21 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"config"
 
 	"github.com/sirupsen/logrus"
 )
 
+const requestTimeoutSeconds = 30
+
 var client http.Client
 
 func init() {
-	client = http.Client{}
+	client = http.Client{
+		Timeout: time.Second * requestTimeoutSeconds,
+	}
 }
 
 // Get Performs a GET request using the net/http client.
