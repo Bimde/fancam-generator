@@ -1,6 +1,7 @@
 package openshot
 
 import (
+	"config"
 	"os"
 	"testing"
 )
@@ -22,6 +23,8 @@ func TestMain(m *testing.M) {
 }
 
 func setup() {
+	config.Set(config.USERNAME, testUsername)
+	config.Set(config.PASSWORD, testPassword)
 	openShot = New(testUsername, testPassword)
 }
 

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"httputils"
 	"io/ioutil"
 )
 
@@ -14,27 +15,8 @@ const (
 // GetProjects returns a list of all projects created
 func (o *OpenShot) GetProjects() (*[]Project, error) {
 	log := getLogger("GetProjects")
-
-	req := o.createReqWithAuth("GET", projectsEndpoint, nil)
-	resp, err := o.client.Do(req)
-
-	if err != nil {
-		log.Error("error executing request ", err)
-		return nil, err
-	}
-
-	log.Info("Response: ", resp)
-	log.Info("Response Body: ", resp.Body)
-
 	var projects Projects
-	bytes, err := ioutil.ReadAll(resp.Body)
-	err = json.Unmarshal(bytes, &projects)
-
-	if err != nil {
-		log.Error("error unmarshalling projects ", err)
-		return nil, err
-	}
-
+	httputils.Get(log, baseURL+projectsEndpoint, nil, &projects)
 	return &projects.Results, nil
 }
 
