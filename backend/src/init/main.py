@@ -84,7 +84,7 @@ class VideoDetect:
             self.maxWidth = width
 
     def GetResultsPersons(self, jobId):
-        maxResults = 10
+        maxResults = 1000
         paginationToken = ''
         finished = False
         count = 0
