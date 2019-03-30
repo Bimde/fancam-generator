@@ -61,7 +61,7 @@ func TestProjectCreatedAndDeleted(t *testing.T) {
 	newProjects = getProjects(t)
 
 	if projects.Count != newProjects.Count {
-		t.Error("croject was not deleted")
+		t.Error("project was not deleted")
 	}
 }
 

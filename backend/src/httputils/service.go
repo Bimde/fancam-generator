@@ -130,7 +130,7 @@ func Post(log *logrus.Entry, path string, body interface{}, output interface{}) 
 }
 
 func addAuth(request *http.Request) {
-	username := config.GetString(config.USERNAME)
-	password := config.GetString(config.PASSWORD)
+	username := config.GetString(config.Username)
+	password := config.GetString(config.Password)
 	request.SetBasicAuth(username, password)
 }

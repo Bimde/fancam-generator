@@ -3,14 +3,14 @@ package config
 var config map[string]interface{}
 
 const (
-	USERNAME = "username"
-	PASSWORD = "password"
+	Username = "username"
+	Password = "password"
 )
 
 func init() {
 	config = map[string]interface{}{}
-	config[USERNAME] = "cloud-openshot" // TODO get from environment
-	config[PASSWORD] = "cloud-password"
+	config[Username] = "cloud-openshot" // TODO get from environment
+	config[Password] = "cloud-password"
 }
 
 // Get returns a property from the configuration with the given key

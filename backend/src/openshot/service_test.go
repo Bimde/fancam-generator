@@ -23,8 +23,8 @@ func TestMain(m *testing.M) {
 }
 
 func setup() {
-	config.Set(config.USERNAME, testUsername)
-	config.Set(config.PASSWORD, testPassword)
+	config.Set(config.Username, testUsername)
+	config.Set(config.Password, testPassword)
 	openShot = New()
 }
 
