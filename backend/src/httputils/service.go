@@ -33,7 +33,20 @@ func Get(log *logrus.Entry, path string, body io.Reader, output interface{}) err
 	if log == nil {
 		log = logrus.WithField("method", "httputils#Get")
 	}
-	req, err := http.NewRequest("GET", path, body)
+	return genericRequest(http.MethodGet, log, path, body, output)
+}
+
+// Delete Performs a DELETE request using the net/http client.
+// Logging is done to the provided logger
+func Delete(log *logrus.Entry, path string, body io.Reader, output interface{}) error {
+	if log == nil {
+		log = logrus.WithField("method", "httputils#Delete")
+	}
+	return genericRequest(http.MethodDelete, log, path, body, output)
+}
+
+func genericRequest(method string, log *logrus.Entry, path string, body io.Reader, output interface{}) error {
+	req, err := http.NewRequest(method, path, body)
 	if err != nil {
 		log.Panic("error creating request ", err)
 	}
@@ -46,11 +59,17 @@ func Get(log *logrus.Entry, path string, body io.Reader, output interface{}) err
 	}
 	if res.StatusCode < 200 || res.StatusCode >= 300 {
 		log.Error("error request response status code ", res.StatusCode)
-		return fmt.Errorf("error executing request to %s", path)
+		return fmt.Errorf("error executing request to %s, status: %d", path, res.StatusCode)
 	}
 
 	log.Debug("Response: ", res)
 	log.Debug("Response Body: ", res.Body)
+
+	if output == nil {
+		// Output doesn't need to be unmarshalled. This is needed for dealing with http code
+		// 204 No Content responses
+		return nil
+	}
 
 	bytes, err := ioutil.ReadAll(res.Body)
 	err = json.Unmarshal(bytes, output)
@@ -76,7 +95,7 @@ func Post(log *logrus.Entry, path string, body interface{}, output interface{}) 
 		return err
 	}
 
-	req, err := http.NewRequest("POST", path, bytes.NewBuffer(data))
+	req, err := http.NewRequest(http.MethodPost, path, bytes.NewBuffer(data))
 	if err != nil {
 		log.Panic("error creating request ", err)
 	}
@@ -98,12 +117,13 @@ func Post(log *logrus.Entry, path string, body interface{}, output interface{}) 
 	if res.StatusCode < 200 || res.StatusCode >= 300 {
 		log.Error("error request response status", res)
 		log.Error("response body ", string(resBody))
-		return fmt.Errorf("error executing request to %s", path)
+		return fmt.Errorf("error executing request to %s, status: %d", path, res.StatusCode)
 	}
 
 	err = json.Unmarshal(resBody, output)
 	if err != nil {
 		log.WithField("responseBody", string(resBody)).Error("error unmarshalling response ", err)
+		return err
 	}
 
 	return nil

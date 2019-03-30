@@ -8,7 +8,7 @@ import (
 
 const (
 	baseURL     = "http://cloud.openshot.org"
-	loggingName = "OpenShot"
+	loggingName = "openshot"
 )
 
 type OpenShot struct {

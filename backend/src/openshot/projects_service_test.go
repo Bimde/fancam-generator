@@ -13,23 +13,12 @@ var (
 func TestGetProjects(t *testing.T) {
 	defer projectsSetup()()
 
-	project, err := createSampleProject(project)
-	defer deleteSampleProject(project)
+	project := createSampleProject(t, project)
+	defer deleteSampleProject(t, project)
 
-	if err != nil {
-		t.Error(err)
-	} else {
-		log.Debug(project)
-	}
+	projects := getProjects(t)
 
-	projects, err := openShot.GetProjects()
-	if err != nil {
-		t.Error(err)
-	} else {
-		log.Debug(projects)
-	}
-
-	if len(*projects) < 1 {
+	if projects.Count < 1 {
 		t.Error("No projects were listed")
 	}
 }
@@ -43,11 +32,9 @@ func TestCreateProject(t *testing.T) {
 	project.Name = sampleName
 	project.Width = sampleWidth
 	project.Height = sampleHeight
-	project, err := createSampleProject(project)
+	project := createSampleProject(t, project)
+	defer deleteSampleProject(t, project)
 
-	if err != nil {
-		t.Fatal("Error creating project ", err)
-	}
 	if project.Name != sampleName {
 		t.Error("Corret project name not set")
 	}
@@ -56,6 +43,25 @@ func TestCreateProject(t *testing.T) {
 	}
 	if project.Height != sampleHeight {
 		t.Error("Corret project height not set")
+	}
+}
+
+func TestProjectCreatedAndDeleted(t *testing.T) {
+	projects := getProjects(t)
+
+	defer projectsSetup()()
+	project = createSampleProject(t, project)
+
+	newProjects := getProjects(t)
+	if projects.Count != newProjects.Count-1 {
+		t.Error("Project was not created")
+	}
+
+	deleteSampleProject(t, project)
+	newProjects = getProjects(t)
+
+	if projects.Count != newProjects.Count {
+		t.Error("Project was not deleted")
 	}
 }
 
@@ -68,10 +74,30 @@ func projectsShutdown() {
 	project = nil
 }
 
-func createSampleProject(sampleProject *Project) (*Project, error) {
-	return openShot.CreateProject(sampleProject)
+func getProjects(t *testing.T) *Projects {
+	projects, err := openShot.GetProjects()
+	if err != nil {
+		t.Error(err)
+	} else {
+		log.Debug(projects)
+	}
+
+	return projects
 }
 
-func deleteSampleProject(sampleProject *Project) {
-	// TODO implement
+func createSampleProject(t *testing.T, sampleProject *Project) *Project {
+	res, err := openShot.CreateProject(sampleProject)
+	if err != nil {
+		t.Fatal(err)
+	} else {
+		log.Debug(res)
+	}
+	return res
+}
+
+func deleteSampleProject(t *testing.T, sampleProject *Project) {
+	err := openShot.DeleteProject(sampleProject.ID)
+	if err != nil {
+		t.Error(err)
+	}
 }

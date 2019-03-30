@@ -1,15 +1,17 @@
 package openshot
 
 import (
+	"fmt"
 	"httputils"
 )
 
 const (
 	projectsEndpoint = "/projects/"
+	projectEndpoint  = projectsEndpoint + "%d/"
 )
 
 // GetProjects returns a list of all projects created on the OpenShot server
-func (o *OpenShot) GetProjects() (*[]Project, error) {
+func (o *OpenShot) GetProjects() (*Projects, error) {
 	log := getLogger("GetProjects")
 	var projects Projects
 
@@ -18,7 +20,7 @@ func (o *OpenShot) GetProjects() (*[]Project, error) {
 		return nil, err
 	}
 
-	return &projects.Results, nil
+	return &projects, nil
 }
 
 // CreateProject creates the given project on the OpenShot server
@@ -33,4 +35,20 @@ func (o *OpenShot) CreateProject(project *Project) (*Project, error) {
 	}
 
 	return &createdProject, nil
+}
+
+// DeleteProject deletes a project on the OpenShot server.
+// Note that this deletion will trigger deletion of all associated files and clips.
+// There is also no (easy) way to recover a deleted project so this endpoints should
+// only be accessible to trusted sources and through an "are you sure" or equivalent
+// confirmation dialog.
+func (o *OpenShot) DeleteProject(projectID int) error {
+	log := getLogger("GetProjects")
+
+	err := httputils.Delete(log, fmt.Sprintf(baseURL+projectEndpoint, projectID), nil, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -1,11 +1,20 @@
 package openshot
 
+// Projects is the response data for /projects/
 type Projects struct {
 	Count   int       `json:"count"`
 	Results []Project `json:"results"`
 }
 
-// http://cloud.openshot.org/doc/api_endpoints.html#projects
+// Files is the response data for /projects/{projectID}/files/
+type Files struct {
+	Count    int    `json:"count"`
+	Results  []File `json:"results"`
+	Next     string `json:"next"`
+	Previous string `json:"previous"`
+}
+
+// Project represents http://cloud.openshot.org/doc/api_endpoints.html#projects
 type Project struct {
 	URL            string      `json:"url"`
 	ID             int         `json:"id"`
@@ -26,7 +35,7 @@ type Project struct {
 	DateUpdated    string      `json:"date_updated"`
 }
 
-// http://cloud.openshot.org/doc/api_endpoints.html#files
+// Files represents http://cloud.openshot.org/doc/api_endpoints.html#files
 type File struct {
 	URL         string      `json:"url"`
 	ID          int         `json:"id"`
@@ -38,20 +47,20 @@ type File struct {
 	DateUpdated string      `json:"date_updated"`
 }
 
-// http://cloud.openshot.org/doc/api_endpoints.html#files
+// FileS3Upload represents http://cloud.openshot.org/doc/api_endpoints.html#files
 type FileUploadS3 struct {
-	URL  string     `json:"url"`
-	JSON FileS3Info `json:"json"`
+	ProjectURL string     `json:"project"`
+	JSON       FileS3Info `json:"json"`
 }
 
-// http://cloud.openshot.org/doc/api_endpoints.html#id20
+// FileS3Info represents http://cloud.openshot.org/doc/api_endpoints.html#id20
 type FileS3Info struct {
 	URL    string `json:"url"`
 	Bucket string `json:"bucket"`
 	Name   string `json:"name"`
 }
 
-// http://cloud.openshot.org/doc/api_endpoints.html#clips
+// Clip represents http://cloud.openshot.org/doc/api_endpoints.html#clips
 type Clip struct {
 	URL      string      `json:"url"`
 	ID       int         `json:"id"`
@@ -64,7 +73,7 @@ type Clip struct {
 	Project  string      `json:"project"`
 }
 
-// http://cloud.openshot.org/doc/api_endpoints.html#exports
+// Export represents http://cloud.openshot.org/doc/api_endpoints.html#exports
 type Export struct {
 	URL          string      `json:"url"`
 	ID           int         `json:"id"`
