@@ -1,62 +1,35 @@
 package openshot
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
 	"httputils"
-	"io/ioutil"
 )
 
 const (
 	projectsEndpoint = "/projects/"
 )
 
-// GetProjects returns a list of all projects created
+// GetProjects returns a list of all projects created on the OpenShot server
 func (o *OpenShot) GetProjects() (*[]Project, error) {
 	log := getLogger("GetProjects")
 	var projects Projects
-	httputils.Get(log, baseURL+projectsEndpoint, nil, &projects)
+
+	err := httputils.Get(log, baseURL+projectsEndpoint, nil, &projects)
+	if err != nil {
+		return nil, err
+	}
+
 	return &projects.Results, nil
 }
 
-// CreateProject creates the given project
+// CreateProject creates the given project on the OpenShot server
 func (o *OpenShot) CreateProject(project *Project) (*Project, error) {
 	log := getLogger("CreateProject").WithField("projectName", project.Name)
-
 	log.Info("Creating project ", *project)
-
-	data, err := json.Marshal(project)
-	if err != nil {
-		log.Error("error marshalling project ", err)
-		return nil, err
-	}
-
-	req := o.createReqWithAuth("POST", projectsEndpoint, bytes.NewBuffer(data))
-	req.Header.Set("Content-Type", "application/json")
-
-	res, err := o.client.Do(req)
-	if err != nil {
-		log.Error("error executing request ", err)
-		return nil, err
-	}
-
-	resBody, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		log.Error("error reading response body ", err)
-		return nil, err
-	}
-	if res.StatusCode < 200 || res.StatusCode >= 300 {
-		log.Error("error request response status", res)
-		log.Error("response body ", string(resBody))
-		return nil, fmt.Errorf("Error creating project %s, OpenShot server response: %s", project.Name, string(resBody))
-	}
-
 	var createdProject Project
-	err = json.Unmarshal(resBody, &createdProject)
 
+	err := httputils.Post(log, baseURL+projectsEndpoint, project, &createdProject)
 	if err != nil {
-		log.WithField("responseBody", string(resBody)).Error("error unmarshalling response ", err)
+		return nil, err
 	}
 
 	return &createdProject, nil

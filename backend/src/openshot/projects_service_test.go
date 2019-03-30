@@ -2,6 +2,8 @@ package openshot
 
 import (
 	"testing"
+
+	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -11,12 +13,20 @@ var (
 func TestGetProjects(t *testing.T) {
 	defer projectsSetup()()
 
-	createSampleProject(project)
+	project, err := createSampleProject(project)
 	defer deleteSampleProject(project)
+
+	if err != nil {
+		t.Error(err)
+	} else {
+		log.Debug(project)
+	}
 
 	projects, err := openShot.GetProjects()
 	if err != nil {
 		t.Error(err)
+	} else {
+		log.Debug(projects)
 	}
 
 	if len(*projects) < 1 {
