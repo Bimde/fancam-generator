@@ -1,3 +1,6 @@
+// Package httputils provides helper methods wrapping net/http.
+// If this package is going to be exported for public use, the panic logs should
+// be changed to errors and the dependency to config should be removed.
 package httputils
 
 import (
@@ -60,7 +63,7 @@ func Get(log *logrus.Entry, path string, body io.Reader, output interface{}) err
 	return nil
 }
 
-// Get Performs a POST request using the net/http client.
+// Post Performs a POST request using the net/http client.
 // Logging is done to the provided logger
 func Post(log *logrus.Entry, path string, body interface{}, output interface{}) error {
 	if log == nil {
