@@ -32,13 +32,6 @@ func (o *OpenShot) DeleteClip(clipID int) error {
 	return httputils.Delete(log, fmt.Sprintf(clipEndpoint, clipID), nil, nil)
 }
 
-/*
-{
-    "file": "http://cloud.openshot.org/files/135/",
-    "project": "http://cloud.openshot.org/projects/146/",
-    "json": {}
-}
-*/
 func createClipStruct(fileID int, projectID int) *Clip {
-	return &Clip{FileURL: fileURL(fileID), ProjectURL: projectURL(projectID), JSON: map[string]string{}}
+	return &Clip{FileURL: fileURL(fileID), ProjectURL: projectURL(projectID), JSON: map[string]interface{}{}}
 }

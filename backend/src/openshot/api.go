@@ -1,25 +1,28 @@
 package openshot
 
+// response contains standard fields for retrieving lists of objects from OpenShot
+type response struct {
+	Count    int    `json:"count"`
+	Next     string `json:"next"`
+	Previous string `json:"previous"`
+}
+
 // Projects is the response data for /projects/
 type Projects struct {
-	Count   int       `json:"count"`
+	response
 	Results []Project `json:"results"`
 }
 
 // Files is the response data for /projects/{projectID}/files/
 type Files struct {
-	Count    int    `json:"count"`
-	Results  []File `json:"results"`
-	Next     string `json:"next"`
-	Previous string `json:"previous"`
+	response
+	Results []File `json:"results"`
 }
 
 // Clips is the response data for /projects/{projectID}/clips/
 type Clips struct {
-	Count    int    `json:"count"`
-	Results  []Clip `json:"results"`
-	Next     string `json:"next"`
-	Previous string `json:"previous"`
+	response
+	Results []Clip `json:"results"`
 }
 
 // Project represents http://cloud.openshot.org/doc/api_endpoints.html#projects
