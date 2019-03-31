@@ -40,7 +40,7 @@ func TestClipsCreatedAndDeleted(t *testing.T) {
 	}
 }
 
-func TestGetClip(t *testing.T) {
+func TestGetAndUpdateClip(t *testing.T) {
 	defer clipsSetup(t)(t)
 	createdClip := createSampleClip(t, project.ID, sampleClip)
 	defer deleteSampleClip(t, createdClip.ID)
@@ -55,6 +55,26 @@ func TestGetClip(t *testing.T) {
 	}
 	if clip.JSON["location_y"] == nil {
 		t.Error("location_y not retrieved from server")
+	}
+
+	const (
+		start = 0.5
+		end   = 0.75
+	)
+
+	clip.Start = start
+	clip.End = end
+	updateClip(t, clip)
+	clip = getClip(t, clip.ID) // making sure data is coming from server
+
+	if clip.ID != createdClip.ID {
+		t.Error("updated clip id doesn't match")
+	}
+	if clip.Start != start {
+		t.Error("clip start not updated")
+	}
+	if clip.End != end {
+		t.Error("clip end not updated")
 	}
 }
 
@@ -76,6 +96,15 @@ func getClip(t *testing.T, clipID int) *Clip {
 
 func createSampleClip(t *testing.T, projectID int, clip *Clip) *Clip {
 	res, err := openShot.CreateClip(projectID, clip)
+	if err != nil {
+		t.Fatal(err)
+	}
+	log.Debug(res)
+	return res
+}
+
+func updateClip(t *testing.T, clip *Clip) *Clip {
+	res, err := openShot.UpdateClip(clip)
 	if err != nil {
 		t.Fatal(err)
 	}

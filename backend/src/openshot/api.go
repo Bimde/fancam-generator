@@ -107,12 +107,18 @@ type Export struct {
 	DateUpdated  string                 `json:"date_updated"`
 }
 
+// Represents the JSON structure of points in animations
+// More details at http://cloud.openshot.org/doc/animation.html#json-structure
+type Property struct {
+	Points []Point `json:"Points"`
+}
+
 type Point struct {
 	Co    Cord `json:"co"`
 	Inter int  `json:"interpolation"`
 }
 
 type Cord struct {
-	X float32 `json:"X"`
-	Y float32 `json:"Y"`
+	X int     `json:"X"` // frame number
+	Y float32 `json:"Y"` // value
 }

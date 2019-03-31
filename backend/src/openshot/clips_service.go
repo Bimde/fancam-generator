@@ -14,7 +14,10 @@ const (
 func (o *OpenShot) GetClips(projectID int) (*Clips, error) {
 	log := getLogger("GetClips")
 	var clips Clips
-	httputils.Get(log, clipsURL(projectID), nil, &clips)
+	err := httputils.Get(log, clipsURL(projectID), nil, &clips)
+	if err != nil {
+		return nil, err
+	}
 	return &clips, nil
 }
 
@@ -22,15 +25,32 @@ func (o *OpenShot) GetClips(projectID int) (*Clips, error) {
 func (o *OpenShot) CreateClip(projectID int, clip *Clip) (*Clip, error) {
 	log := getLogger("CreateClip")
 	var createdClip Clip
-	httputils.Post(log, clipsURL(projectID), clip, &createdClip)
+	err := httputils.Post(log, clipsURL(projectID), clip, &createdClip)
+	if err != nil {
+		return nil, err
+	}
 	return &createdClip, nil
+}
+
+// UpdateClip updates a clip on the OpenShot server
+func (o *OpenShot) UpdateClip(clip *Clip) (*Clip, error) {
+	log := getLogger("CreateClip")
+	var updatedClip Clip
+	err := httputils.Put(log, clipURL(clip.ID), clip, &updatedClip)
+	if err != nil {
+		return nil, err
+	}
+	return &updatedClip, nil
 }
 
 // GetClip gets the server version of the specified clip
 func (o *OpenShot) GetClip(clipID int) (*Clip, error) {
 	log := getLogger("CreateClip")
 	var clip Clip
-	httputils.Get(log, clipURL(clipID), nil, &clip)
+	err := httputils.Get(log, clipURL(clipID), nil, &clip)
+	if err != nil {
+		return nil, err
+	}
 	return &clip, nil
 }
 
