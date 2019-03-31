@@ -114,8 +114,8 @@ type Property struct {
 }
 
 type Point struct {
-	Co    Cord `json:"co"`
-	Inter int  `json:"interpolation"`
+	Co            Cord `json:"co"`
+	Interpolation int  `json:"interpolation"`
 }
 
 type Cord struct {

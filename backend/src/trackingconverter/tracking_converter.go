@@ -8,7 +8,6 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/rekognition"
@@ -61,8 +60,11 @@ func process(notification *RekSNSNotification) error {
 			if person == nil || *person.Index != tempPersonIndex {
 				continue
 			}
+			// if person == nil {
+			// 	continue
+			// }
 			count++
-			log.Println("Person")
+			log.Printf("Person (index=%d)", *person.Index)
 
 			boundingBox := person.BoundingBox
 			if boundingBox == nil {
@@ -118,21 +120,21 @@ func handle(ctx context.Context, snsEvent events.SNSEvent) (events.APIGatewayPro
 	return events.APIGatewayProxyResponse{code, headers, nil, string(response), false}, nil
 }
 
-func main() {
-	session, err := session.NewSession(&aws.Config{
-		Region: aws.String(awsRegion)},
-	)
-	svc = rekognition.New(session)
+// func main() {
+// 	session, err := session.NewSession(&aws.Config{
+// 		Region: aws.String(awsRegion)},
+// 	)
+// 	svc = rekognition.New(session)
 
-	log := getLogger("main")
+// 	log := getLogger("main")
 
-	if err != nil {
-		log.Panic("Error initiating session ", err)
-	} else {
-		log.Info("Successfully initiated session")
-		lambda.Start(handle)
-	}
-}
+// 	if err != nil {
+// 		log.Panic("Error initiating session ", err)
+// 	} else {
+// 		log.Info("Successfully initiated session")
+// 		lambda.Start(handle)
+// 	}
+// }
 
 func getLogger(method string) *log.Entry {
 	return log.WithFields(log.Fields{
@@ -140,19 +142,19 @@ func getLogger(method string) *log.Entry {
 	})
 }
 
-//func _main() {
-//	session, err := session.NewSession(&aws.Config{
-//		Region: aws.String(awsRegion)},
-//	)
-//	if err != nil {
-//		log.Error(err)
-//		panic(err)
-//	}
-//
-//	svc = rekognition.New(session)
-//
-//	err = process(&RekSNSNotification{JobId: "51a3a9bed1dca4015708e18b24c884ecde6212fb738870500bbd440ad284e2f1"})
-//	if err != nil {
-//		log.Error(err)
-//	}
-//}
+func main() {
+	session, err := session.NewSession(&aws.Config{
+		Region: aws.String(awsRegion)},
+	)
+	if err != nil {
+		log.Error(err)
+		panic(err)
+	}
+
+	svc = rekognition.New(session)
+
+	err = process(&RekSNSNotification{JobID: "51a3a9bed1dca4015708e18b24c884ecde6212fb738870500bbd440ad284e2f1"})
+	if err != nil {
+		log.Error(err)
+	}
+}
