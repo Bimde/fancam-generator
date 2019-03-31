@@ -14,6 +14,14 @@ type Files struct {
 	Previous string `json:"previous"`
 }
 
+// Clips is the response data for /projects/{projectID}/clips/
+type Clips struct {
+	Count    int    `json:"count"`
+	Results  []Clip `json:"results"`
+	Next     string `json:"next"`
+	Previous string `json:"previous"`
+}
+
 // Project represents http://cloud.openshot.org/doc/api_endpoints.html#projects
 type Project struct {
 	URL            string      `json:"url"`
@@ -62,15 +70,15 @@ type FileS3Info struct {
 
 // Clip represents http://cloud.openshot.org/doc/api_endpoints.html#clips
 type Clip struct {
-	URL      string      `json:"url"`
-	ID       int         `json:"id"`
-	JSON     interface{} `json:"json"`
-	File     string      `json:"file"`
-	Position float32     `json:"position"`
-	Start    float32     `json:"start"`
-	End      float32     `json:"end"`
-	Actions  []string    `json:"actions"`
-	Project  string      `json:"project"`
+	URL        string      `json:"url"`
+	ID         int         `json:"id"`
+	JSON       interface{} `json:"json"`
+	FileURL    string      `json:"file"`
+	Position   float32     `json:"position"`
+	Start      float32     `json:"start"`
+	End        float32     `json:"end"`
+	Actions    []string    `json:"actions"`
+	ProjectURL string      `json:"project"`
 }
 
 // Export represents http://cloud.openshot.org/doc/api_endpoints.html#exports

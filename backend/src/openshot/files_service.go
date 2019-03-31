@@ -12,11 +12,11 @@ const (
 	s3DefaultBucket      = "fancamgenerator"
 )
 
-// GetProjects returns a list of all projects created
+// GetFiles returns a list of all files created for a particular project
 func (o *OpenShot) GetFiles(projectID int) (*Files, error) {
 	log := getLogger("GetFiles")
 	var files Files
-	httputils.Get(log, fmt.Sprintf(filesEndpoint, projectID), nil, &files)
+	httputils.Get(log, filesURL(projectID), nil, &files)
 	return &files, nil
 }
 
@@ -27,7 +27,7 @@ func (o *OpenShot) CreateFile(projectID int, file *FileUploadS3) (*File, error) 
 	log := getLogger("CreateFile")
 	setDefaults(file, projectID)
 	var createdFile File
-	httputils.Post(log, fmt.Sprintf(filesEndpoint, projectID), file, &createdFile)
+	httputils.Post(log, filesURL(projectID), file, &createdFile)
 	return &createdFile, nil
 }
 
@@ -50,5 +50,13 @@ func setDefaults(file *FileUploadS3, projectID int) {
 // DeleteFile deletes the file from openshot and associated storage
 func (o *OpenShot) DeleteFile(fileID int) error {
 	log := getLogger("DeleteFile")
-	return httputils.Delete(log, fmt.Sprintf(fileEndpoint, fileID), nil, nil)
+	return httputils.Delete(log, fileURL(fileID), nil, nil)
+}
+
+func filesURL(projectID int) string {
+	return fmt.Sprintf(filesEndpoint, projectID)
+}
+
+func fileURL(fileID int) string {
+	return fmt.Sprintf(fileEndpoint, fileID)
 }

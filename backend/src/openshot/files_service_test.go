@@ -34,7 +34,7 @@ func TestFilesCreatedAndDeleted(t *testing.T) {
 	deleteSampleFile(t, createdFile.ID)
 	newFiles = getFiles(t, project.ID)
 
-	if newFiles.Count != newFiles.Count {
+	if files.Count != newFiles.Count {
 		t.Error("file was not deleted")
 	}
 }
@@ -71,6 +71,7 @@ func filesSetup(t *testing.T) func(*testing.T) {
 }
 
 func filesShutdown(t *testing.T) {
+	sampleFile = nil
 	deleteSampleProject(t, project)
 	projectsShutdown()
 }
