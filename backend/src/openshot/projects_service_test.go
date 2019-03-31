@@ -66,7 +66,7 @@ func TestProjectCreatedAndDeleted(t *testing.T) {
 }
 
 func projectsSetup() func() {
-	project = &Project{Name: "Sample Name", JSON: map[string]interface{}{}}
+	project = &Project{Name: "Sample Name"}
 	return projectsShutdown
 }
 

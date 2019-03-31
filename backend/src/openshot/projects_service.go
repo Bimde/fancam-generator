@@ -88,4 +88,7 @@ func fillDefaults(project *Project) {
 	if project.ChannelLayout == 0 {
 		project.ChannelLayout = defaultAudioChannelLayout
 	}
+	if project.JSON == nil {
+		project.JSON = map[string]interface{}{}
+	}
 }

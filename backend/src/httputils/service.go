@@ -70,7 +70,7 @@ func genericRequest(method string, log *logrus.Entry, path string, input interfa
 	} else {
 		data, err := json.Marshal(input)
 		if err != nil {
-			log.Error("error marshalling project ", err)
+			log.Error("error marshalling input ", err)
 			return err
 		}
 		body = bytes.NewBuffer(data)
@@ -88,32 +88,30 @@ func genericRequest(method string, log *logrus.Entry, path string, input interfa
 		log.Error("error executing request ", err)
 		return err
 	}
-	if res.StatusCode < 200 || res.StatusCode >= 300 {
-		log.Error("error request response status code ", res.StatusCode)
-		return fmt.Errorf("error executing request to %s, status: %d", path, res.StatusCode)
-	}
 
 	log.Debug("Response: ", res)
 
-	if output == nil {
-		// Output doesn't need to be unmarshalled. This is needed for dealing with http code
-		// 204 No Content responses
-		return nil
+	var bytes []byte
+	if res.ContentLength > 0 {
+		bytes, err = ioutil.ReadAll(res.Body)
+		if err != nil {
+			log.Error("error reading response body ", err)
+			return err
+		}
+		log.Debug("Response Body: ", string(bytes))
 	}
 
-	bytes, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		log.Error("error reading response body ", err)
-		return err
+	if res.StatusCode < 200 || res.StatusCode >= 300 {
+		log.WithField("statusCode", res.StatusCode).Error("error request response body ", string(bytes))
+		return fmt.Errorf("error executing request to %s, status: %d", path, res.StatusCode)
 	}
 
-	log.Debug("Response Body: ", string(bytes))
-
-	err = json.Unmarshal(bytes, output)
-
-	if err != nil {
-		log.Error("error unmarshalling response ", err)
-		return err
+	if output != nil {
+		err = json.Unmarshal(bytes, output)
+		if err != nil {
+			log.Error("error unmarshalling response ", err)
+			return err
+		}
 	}
 
 	return nil
