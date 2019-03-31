@@ -107,7 +107,7 @@ type Export struct {
 	DateUpdated  string                 `json:"date_updated"`
 }
 
-// Represents the JSON structure of points in animations
+// Property represents the JSON structure of points in animations
 // More details at http://cloud.openshot.org/doc/animation.html#json-structure
 type Property struct {
 	Points []Point `json:"Points"`

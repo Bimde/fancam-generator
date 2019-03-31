@@ -1,3 +1,6 @@
+// Package config provides an abstraction for application configuration.
+// Configuration could come from the environment, config files, or be directly
+// set programatically.
 package config
 
 var config map[string]interface{}
