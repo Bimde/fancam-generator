@@ -38,9 +38,9 @@ type Project struct {
 	SampleRate     int         `json:"sample_rate"`
 	Channels       int         `json:"channels"`
 	ChannelLayout  int         `json:"channel_layout"`
-	Files          []File      `json:"files"`
-	Clips          []Clip      `json:"clips"`
-	Exports        []Export    `json:"exports"`
+	FileURLs       []string    `json:"files"`
+	ClipURLs       []string    `json:"clips"`
+	ExportURLs     []string    `json:"exports"`
 	Actions        []string    `json:"actions"`
 	DateCreated    string      `json:"date_created"`
 	DateUpdated    string      `json:"date_updated"`
@@ -73,38 +73,38 @@ type FileS3Info struct {
 
 // Clip represents http://cloud.openshot.org/doc/api_endpoints.html#clips
 type Clip struct {
-	URL        string      `json:"url"`
-	ID         int         `json:"id"`
-	JSON       interface{} `json:"json"`
-	FileURL    string      `json:"file"`
-	Position   float32     `json:"position"`
-	Start      float32     `json:"start"`
-	End        float32     `json:"end"`
-	Actions    []string    `json:"actions"`
-	ProjectURL string      `json:"project"`
+	URL        string                 `json:"url"`
+	ID         int                    `json:"id"`
+	JSON       map[string]interface{} `json:"json"`
+	FileURL    string                 `json:"file"`
+	Position   float32                `json:"position"`
+	Start      float32                `json:"start"`
+	End        float32                `json:"end"`
+	Actions    []string               `json:"actions"`
+	ProjectURL string                 `json:"project"`
 }
 
 // Export represents http://cloud.openshot.org/doc/api_endpoints.html#exports
 type Export struct {
-	URL          string      `json:"url"`
-	ID           int         `json:"id"`
-	JSON         interface{} `json:"json"`
-	Output       string      `json:"output"`
-	ExportType   string      `json:"export_type"`
-	VideoFormat  string      `json:"video_format"`
-	VideoCodec   string      `json:"video_codec"`
-	VideoBitrate int         `json:"video_bitrate"`
-	AudioCodec   string      `json:"ac3"`
-	AudioBitrate int         `json:"audio_bitrate"`
-	StartFrame   int         `json:"start_frame"`
-	EndFrame     int         `json:"end_frame"`
-	Actions      []string    `json:"actions"`
-	Project      string      `json:"project"`
-	Webhook      string      `json:"webhook"`
-	Progress     float32     `json:"progress"`
-	Status       string      `json:"status"`
-	DateCreated  string      `json:"date_created"`
-	DateUpdated  string      `json:"date_updated"`
+	URL          string                 `json:"url"`
+	ID           int                    `json:"id"`
+	JSON         map[string]interface{} `json:"json"`
+	Output       string                 `json:"output"`
+	ExportType   string                 `json:"export_type"`
+	VideoFormat  string                 `json:"video_format"`
+	VideoCodec   string                 `json:"video_codec"`
+	VideoBitrate int                    `json:"video_bitrate"`
+	AudioCodec   string                 `json:"ac3"`
+	AudioBitrate int                    `json:"audio_bitrate"`
+	StartFrame   int                    `json:"start_frame"`
+	EndFrame     int                    `json:"end_frame"`
+	Actions      []string               `json:"actions"`
+	Project      string                 `json:"project"`
+	Webhook      string                 `json:"webhook"`
+	Progress     float32                `json:"progress"`
+	Status       string                 `json:"status"`
+	DateCreated  string                 `json:"date_created"`
+	DateUpdated  string                 `json:"date_updated"`
 }
 
 type Point struct {

@@ -14,7 +14,7 @@ const (
 func (o *OpenShot) GetClips(projectID int) (*Clips, error) {
 	log := getLogger("GetClips")
 	var clips Clips
-	httputils.Get(log, fmt.Sprintf(clipsEndpoint, projectID), nil, &clips)
+	httputils.Get(log, clipsURL(projectID), nil, &clips)
 	return &clips, nil
 }
 
@@ -22,16 +22,32 @@ func (o *OpenShot) GetClips(projectID int) (*Clips, error) {
 func (o *OpenShot) CreateClip(projectID int, clip *Clip) (*Clip, error) {
 	log := getLogger("CreateClip")
 	var createdClip Clip
-	httputils.Post(log, fmt.Sprintf(clipsEndpoint, projectID), clip, &createdClip)
+	httputils.Post(log, clipsURL(projectID), clip, &createdClip)
 	return &createdClip, nil
+}
+
+// GetClip gets the server version of the specified clip
+func (o *OpenShot) GetClip(clipID int) (*Clip, error) {
+	log := getLogger("CreateClip")
+	var clip Clip
+	httputils.Get(log, clipURL(clipID), nil, &clip)
+	return &clip, nil
 }
 
 // DeleteClip deletes the clip from openshot
 func (o *OpenShot) DeleteClip(clipID int) error {
 	log := getLogger("DeleteClip")
-	return httputils.Delete(log, fmt.Sprintf(clipEndpoint, clipID), nil, nil)
+	return httputils.Delete(log, clipURL(clipID), nil, nil)
 }
 
 func createClipStruct(fileID int, projectID int) *Clip {
 	return &Clip{FileURL: fileURL(fileID), ProjectURL: projectURL(projectID), JSON: map[string]interface{}{}}
+}
+
+func clipsURL(projectID int) string {
+	return fmt.Sprintf(clipsEndpoint, projectID)
+}
+
+func clipURL(clipID int) string {
+	return fmt.Sprintf(clipEndpoint, clipID)
 }

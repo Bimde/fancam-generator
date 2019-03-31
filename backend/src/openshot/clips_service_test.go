@@ -40,12 +40,38 @@ func TestClipsCreatedAndDeleted(t *testing.T) {
 	}
 }
 
+func TestGetClip(t *testing.T) {
+	defer clipsSetup(t)(t)
+	createdClip := createSampleClip(t, project.ID, sampleClip)
+	defer deleteSampleClip(t, createdClip.ID)
+
+	clip := getClip(t, createdClip.ID)
+
+	if clip.ID != createdClip.ID {
+		t.Error("clip ids don't match")
+	}
+	if clip.JSON["location_x"] == nil {
+		t.Error("location_x not retrieved from server")
+	}
+	if clip.JSON["location_y"] == nil {
+		t.Error("location_y not retrieved from server")
+	}
+}
+
 func getClips(t *testing.T, projectID int) *Clips {
-	clips, err := openShot.GetClips(project.ID)
+	clips, err := openShot.GetClips(projectID)
 	if err != nil {
-		t.Error("error getting files ", err)
+		t.Error("error getting clips ", err)
 	}
 	return clips
+}
+
+func getClip(t *testing.T, clipID int) *Clip {
+	clip, err := openShot.GetClip(clipID)
+	if err != nil {
+		t.Error("error getting clip ", err)
+	}
+	return clip
 }
 
 func createSampleClip(t *testing.T, projectID int, clip *Clip) *Clip {
