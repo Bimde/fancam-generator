@@ -46,7 +46,7 @@ type Project struct {
 	DateUpdated    string      `json:"date_updated"`
 }
 
-// Files represents http://cloud.openshot.org/doc/api_endpoints.html#files
+// File represents http://cloud.openshot.org/doc/api_endpoints.html#files
 type File struct {
 	URL         string      `json:"url"`
 	ID          int         `json:"id"`
@@ -58,7 +58,7 @@ type File struct {
 	DateUpdated string      `json:"date_updated"`
 }
 
-// FileS3Upload represents http://cloud.openshot.org/doc/api_endpoints.html#files
+// FileUploadS3 represents http://cloud.openshot.org/doc/api_endpoints.html#files
 type FileUploadS3 struct {
 	ProjectURL string     `json:"project"`
 	JSON       FileS3Info `json:"json"`

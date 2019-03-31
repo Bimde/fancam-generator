@@ -10,6 +10,16 @@ const (
 	projectEndpoint  = projectsEndpoint + "%d/"
 )
 
+const (
+	defaultProjectWidth          = 1920
+	defaultProjectHeight         = 1080
+	defaultProjectFPSNumerator   = 30
+	defaultProjectFPSDenominator = 1
+	defaultAudioSampleRate       = 44100
+	defaultAudioChannels         = 2 // 2=stereo
+	defaultAudioChannelLayout    = 3 // 3=stereo, 4=mono, 7=Surround
+)
+
 // GetProjects returns a list of all projects created on the OpenShot server
 func (o *OpenShot) GetProjects() (*Projects, error) {
 	log := getLogger("GetProjects")
@@ -26,6 +36,7 @@ func (o *OpenShot) GetProjects() (*Projects, error) {
 // CreateProject creates the given project on the OpenShot server
 func (o *OpenShot) CreateProject(project *Project) (*Project, error) {
 	log := getLogger("CreateProject").WithField("projectName", project.Name)
+	fillDefaults(project)
 	log.Info("Creating project ", *project)
 	var createdProject Project
 
@@ -53,4 +64,28 @@ func projectsURL() string {
 
 func projectURL(projectID int) string {
 	return fmt.Sprintf(baseURL+projectEndpoint, projectID)
+}
+
+func fillDefaults(project *Project) {
+	if project.FPSNumerator == 0 {
+		project.FPSNumerator = defaultProjectFPSNumerator
+	}
+	if project.FPSDenominator == 0 {
+		project.FPSDenominator = defaultProjectFPSDenominator
+	}
+	if project.Width == 0 {
+		project.Width = defaultProjectWidth
+	}
+	if project.Height == 0 {
+		project.Height = defaultProjectHeight
+	}
+	if project.SampleRate == 0 {
+		project.SampleRate = defaultAudioSampleRate
+	}
+	if project.Channels == 0 {
+		project.Channels = defaultAudioChannels
+	}
+	if project.ChannelLayout == 0 {
+		project.ChannelLayout = defaultAudioChannelLayout
+	}
 }
