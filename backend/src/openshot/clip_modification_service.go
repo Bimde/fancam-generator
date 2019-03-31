@@ -19,7 +19,7 @@ func (o *OpenShot) SetScale(clip *Clip, scale int) {
 
 // AddPropertyPoint sets a JSON property of the provided clip object at the specified frame
 // DOES NOT set value on server, requires call to UpdateClip
-func (o *OpenShot) AddPropertyPoint(clip *Clip, key string, frame int, value float32) {
+func (o *OpenShot) AddPropertyPoint(clip *Clip, key string, frame int, value float64) {
 	property := o.GetProperty(clip, key)
 	property.Points = append(property.Points, Point{Co: Cord{X: frame, Y: value}, Interpolation: interpolationMode})
 	clip.JSON[key] = property

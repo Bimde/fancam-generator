@@ -66,7 +66,7 @@ func deleteSampleFile(t *testing.T, fileID int) {
 func filesSetup(t *testing.T) func(*testing.T) {
 	projectsSetup()
 	project = createSampleProject(t, project)
-	sampleFile = createFileStruct(testFileName)
+	sampleFile = CreateFileStruct(testFileName)
 	return filesShutdown
 }
 

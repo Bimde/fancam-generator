@@ -122,7 +122,7 @@ func deleteSampleClip(t *testing.T, clipID int) {
 func clipsSetup(t *testing.T) func(*testing.T) {
 	filesSetup(t)
 	createdFile = createSampleFile(t, project.ID, sampleFile)
-	sampleClip = createClipStruct(createdFile.ID, project.ID)
+	sampleClip = CreateClipStruct(createdFile.ID, project.ID)
 	return clipsShutdown
 }
 

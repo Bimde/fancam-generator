@@ -60,7 +60,7 @@ func (o *OpenShot) DeleteClip(clipID int) error {
 	return httputils.Delete(log, clipURL(clipID), nil, nil)
 }
 
-func createClipStruct(fileID int, projectID int) *Clip {
+func CreateClipStruct(fileID int, projectID int) *Clip {
 	return &Clip{FileURL: fileURL(fileID), ProjectURL: projectURL(projectID), JSON: map[string]interface{}{}}
 }
 

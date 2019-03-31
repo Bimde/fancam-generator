@@ -120,5 +120,5 @@ type Point struct {
 
 type Cord struct {
 	X int     `json:"X"` // frame number
-	Y float32 `json:"Y"` // value
+	Y float64 `json:"Y"` // value
 }

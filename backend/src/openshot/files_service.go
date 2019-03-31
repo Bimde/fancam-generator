@@ -31,7 +31,8 @@ func (o *OpenShot) CreateFile(projectID int, file *FileUploadS3) (*File, error) 
 	return &createdFile, nil
 }
 
-func createFileStruct(testFileName string) *FileUploadS3 {
+// CreateFileStruct creates a minimum file struct required for intput to CreateFile
+func CreateFileStruct(testFileName string) *FileUploadS3 {
 	return &FileUploadS3{JSON: FileS3Info{Name: testFileName}}
 }
 

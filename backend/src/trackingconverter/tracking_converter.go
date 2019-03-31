@@ -71,6 +71,7 @@ func process(notification *RekSNSNotification) error {
 				continue
 			}
 
+			addTrackingFrame(*p.Timestamp, *boundingBox.Width, *boundingBox.Left)
 			log.Println("	Timestamp: ", *p.Timestamp)
 			log.Println("	Bounding Box")
 			log.Printf("		Top: %f", *boundingBox.Top)
@@ -85,8 +86,17 @@ func process(notification *RekSNSNotification) error {
 			paginationToken = results.NextToken
 		}
 	}
+
+	log.Info("ProjectID: ", project.ID)
 	log.Info("Number of PersonDetection objects: ", totalCount)
 	log.WithField("index", tempPersonIndex).Info("Number of PersonDetection objects for index: ", count)
+
+	err := saveClip()
+	if err != nil {
+		log.Error("error saving clip ", err)
+		return err
+	}
+
 	return nil
 }
 

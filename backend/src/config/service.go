@@ -12,8 +12,8 @@ const (
 
 func init() {
 	config = map[string]interface{}{}
-	config[Username] = "cloud-openshot" // TODO get from environment
-	config[Password] = "cloud-password"
+	config[Username] = "demo-cloud" // TODO get from environment
+	config[Password] = "demo-password"
 }
 
 // Get returns a property from the configuration with the given key
