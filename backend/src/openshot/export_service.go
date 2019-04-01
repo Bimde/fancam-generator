@@ -59,7 +59,7 @@ func CreateExportStruct(projectID int) *Export {
 		AudioCodec:   audioCodec,
 		AudioBitrate: audioBitrate,
 		StartFrame:   startFrame,
-		Project:      projectURL(projectID),
+		ProjectURL:   projectURL(projectID),
 		JSON:         map[string]interface{}{},
 		Status:       status,
 	}

@@ -25,7 +25,7 @@ type Clips struct {
 	Results []Clip `json:"results"`
 }
 
-// Clips is the response data for /projects/{projectID}/exports/
+// Exports is the response data for /projects/{projectID}/exports/
 type Exports struct {
 	response
 	Results []Export `json:"results"`
@@ -105,7 +105,7 @@ type Export struct {
 	StartFrame   int                    `json:"start_frame"`
 	EndFrame     int                    `json:"end_frame"`
 	Actions      []string               `json:"actions"`
-	Project      string                 `json:"project"`
+	ProjectURL   string                 `json:"project"`
 	Webhook      string                 `json:"webhook"`
 	Progress     float32                `json:"progress"`
 	Status       string                 `json:"status"`

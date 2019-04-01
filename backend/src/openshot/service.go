@@ -15,7 +15,7 @@ const (
 type OpenShot struct {
 }
 
-// New creates a new instance of OpenShot with a deafult http.Client.
+// New creates a new instance of OpenShot with default settings
 func New() *OpenShot {
 	return &OpenShot{}
 }

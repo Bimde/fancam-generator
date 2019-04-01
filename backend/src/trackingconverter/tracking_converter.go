@@ -65,9 +65,6 @@ func process(notification *rekSNSNotification) error {
 			if *person.Index > noPeople {
 				noPeople = *person.Index
 			}
-			if *person.Index != tempPersonIndex {
-				continue
-			}
 
 			// if person == nil {
 			// 	continue
@@ -81,7 +78,7 @@ func process(notification *rekSNSNotification) error {
 				continue
 			}
 
-			addTrackingFrame(*p.Timestamp, *boundingBox.Width, *boundingBox.Left)
+			GetClient(*person.Index).AddTrackingFrame(*p.Timestamp, *boundingBox.Width, *boundingBox.Left)
 			log.Println("	Bounding Box")
 			log.Printf("		Top: %f", *boundingBox.Top)
 			log.Printf("		Left: %f", *boundingBox.Left)
@@ -96,15 +93,14 @@ func process(notification *rekSNSNotification) error {
 		}
 	}
 
-	log.Info("ProjectID: ", project.ID)
 	log.Info("Number of PersonDetection objects: ", totalCount)
 	log.Info("Number of People: ", noPeople)
 	log.WithField("index", tempPersonIndex).Info("Number of PersonDetection objects for index: ", count)
 
-	err := saveClip()
-	if err != nil {
-		log.Error("error saving clip ", err)
-		return err
+	exports := TriggerAllExports()
+
+	for _, e := range *exports {
+		log.WithField("Project", e.ProjectURL).Infof("Export: %s", e.URL)
 	}
 
 	return nil
