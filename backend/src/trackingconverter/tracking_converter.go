@@ -8,30 +8,31 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/rekognition"
 )
 
 const (
-	awsRegion       string = "us-east-1"
-	functionName    string = "tracking_converter"
-	tempPersonIndex        = 0
-	loggingName            = "lambda"
+	awsRegion       = "us-east-1"
+	functionName    = "tracking_converter"
+	tempPersonIndex = 0
+	loggingName     = "lambda"
 )
 
 var svc *rekognition.Rekognition
 
-type ResponseBody struct {
+type responseBody struct {
 	Response string `json:"response"`
 }
 
-type RekSNSNotification struct {
+type rekSNSNotification struct {
 	JobID  string `json:"JobId"`
 	Status string `json:"Status"`
 }
 
-func process(notification *RekSNSNotification) error {
+func process(notification *rekSNSNotification) error {
 	log := getLogger("process")
 	var (
 		maxResults      int64 = 100
@@ -65,6 +66,7 @@ func process(notification *RekSNSNotification) error {
 			// }
 			count++
 			log.Printf("Person (index=%d)", *person.Index)
+			log.Println("	Timestamp: ", *p.Timestamp)
 
 			boundingBox := person.BoundingBox
 			if boundingBox == nil {
@@ -72,7 +74,6 @@ func process(notification *RekSNSNotification) error {
 			}
 
 			addTrackingFrame(*p.Timestamp, *boundingBox.Width, *boundingBox.Left)
-			log.Println("	Timestamp: ", *p.Timestamp)
 			log.Println("	Bounding Box")
 			log.Printf("		Top: %f", *boundingBox.Top)
 			log.Printf("		Left: %f", *boundingBox.Left)
@@ -106,7 +107,7 @@ func handle(ctx context.Context, snsEvent events.SNSEvent) (events.APIGatewayPro
 	log.Info("context ", ctx)
 	headers := map[string]string{"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"}
 
-	var notification *RekSNSNotification
+	var notification *rekSNSNotification
 	jsonParseError := json.Unmarshal([]byte(snsEvent.Records[0].SNS.Message), notification)
 	if jsonParseError != nil {
 		log.Error(jsonParseError)
@@ -120,7 +121,7 @@ func handle(ctx context.Context, snsEvent events.SNSEvent) (events.APIGatewayPro
 	code := 200
 
 	// TODO change response
-	response, jsonBuildError := json.Marshal(ResponseBody{Response: "TODO"})
+	response, jsonBuildError := json.Marshal(responseBody{Response: "TODO"})
 	if jsonBuildError != nil {
 		log.Error(jsonBuildError)
 		response = []byte("Internal Server Error")
@@ -130,41 +131,24 @@ func handle(ctx context.Context, snsEvent events.SNSEvent) (events.APIGatewayPro
 	return events.APIGatewayProxyResponse{code, headers, nil, string(response), false}, nil
 }
 
-// func main() {
-// 	session, err := session.NewSession(&aws.Config{
-// 		Region: aws.String(awsRegion)},
-// 	)
-// 	svc = rekognition.New(session)
+func main() {
+	session, err := session.NewSession(&aws.Config{
+		Region: aws.String(awsRegion)},
+	)
+	svc = rekognition.New(session)
 
-// 	log := getLogger("main")
+	log := getLogger("main")
 
-// 	if err != nil {
-// 		log.Panic("Error initiating session ", err)
-// 	} else {
-// 		log.Info("Successfully initiated session")
-// 		lambda.Start(handle)
-// 	}
-// }
+	if err != nil {
+		log.Panic("Error initiating session ", err)
+	} else {
+		log.Info("Successfully initiated session")
+		lambda.Start(handle)
+	}
+}
 
 func getLogger(method string) *log.Entry {
 	return log.WithFields(log.Fields{
 		"method": fmt.Sprintf("%s#%s", loggingName, method),
 	})
-}
-
-func main() {
-	session, err := session.NewSession(&aws.Config{
-		Region: aws.String(awsRegion)},
-	)
-	if err != nil {
-		log.Error(err)
-		panic(err)
-	}
-
-	svc = rekognition.New(session)
-
-	err = process(&RekSNSNotification{JobID: "51a3a9bed1dca4015708e18b24c884ecde6212fb738870500bbd440ad284e2f1"})
-	if err != nil {
-		log.Error(err)
-	}
 }
