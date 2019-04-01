@@ -4,7 +4,7 @@ import "openshot"
 
 const (
 	projectName = "Test Project #1"
-	fileName    = "ITZY.mp4"
+	fileName    = "IDOL.mp4"
 	scale       = 0
 	fps         = 30
 	height      = 1080

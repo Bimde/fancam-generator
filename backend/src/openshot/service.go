@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	baseURL     = "http://cloud.openshot.org"
+	baseURL = "http://cloud.openshot.org"
+	// baseURL     = "http://54.175.143.71"
 	loggingName = "openshot"
 )
 

@@ -20,7 +20,7 @@ func TestProcess(t *testing.T) {
 
 	svc = rekognition.New(session)
 
-	err = process(&rekSNSNotification{JobID: "9c12697cbba2cc8bfc2051836b60e5c34be3bf5313127f2736eaf9b159c90c51"})
+	err = process(&rekSNSNotification{JobID: "1e9e70a679024b396e5b8145ba3b6f69a17a6e82810b268793d8df256994c4a4"})
 	// err = process(&rekSNSNotification{JobID: "51a3a9bed1dca4015708e18b24c884ecde6212fb738870500bbd440ad284e2f1"})
 	if err != nil {
 		t.Error(err)

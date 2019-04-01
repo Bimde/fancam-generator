@@ -17,7 +17,7 @@ import (
 const (
 	awsRegion       = "us-east-1"
 	functionName    = "tracking_converter"
-	tempPersonIndex = 0
+	tempPersonIndex = 1
 	loggingName     = "lambda"
 )
 
@@ -40,6 +40,7 @@ func process(notification *rekSNSNotification) error {
 		finished        = false
 		totalCount      = 0
 		count           = 0
+		noPeople        = int64(0)
 	)
 	for !finished {
 		x := rekognition.GetPersonTrackingInput{
@@ -58,9 +59,16 @@ func process(notification *rekSNSNotification) error {
 			totalCount++
 
 			person := p.Person
-			if person == nil || *person.Index != tempPersonIndex {
+			if person == nil {
 				continue
 			}
+			if *person.Index > noPeople {
+				noPeople = *person.Index
+			}
+			if *person.Index != tempPersonIndex {
+				continue
+			}
+
 			// if person == nil {
 			// 	continue
 			// }
@@ -90,6 +98,7 @@ func process(notification *rekSNSNotification) error {
 
 	log.Info("ProjectID: ", project.ID)
 	log.Info("Number of PersonDetection objects: ", totalCount)
+	log.Info("Number of People: ", noPeople)
 	log.WithField("index", tempPersonIndex).Info("Number of PersonDetection objects for index: ", count)
 
 	err := saveClip()

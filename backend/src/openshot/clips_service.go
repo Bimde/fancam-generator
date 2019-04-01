@@ -34,7 +34,7 @@ func (o *OpenShot) CreateClip(projectID int, clip *Clip) (*Clip, error) {
 
 // UpdateClip updates a clip on the OpenShot server
 func (o *OpenShot) UpdateClip(clip *Clip) (*Clip, error) {
-	log := getLogger("CreateClip")
+	log := getLogger("UpdateClip")
 	var updatedClip Clip
 	err := httputils.Put(log, clipURL(clip.ID), clip, &updatedClip)
 	if err != nil {
@@ -45,7 +45,7 @@ func (o *OpenShot) UpdateClip(clip *Clip) (*Clip, error) {
 
 // GetClip gets the server version of the specified clip
 func (o *OpenShot) GetClip(clipID int) (*Clip, error) {
-	log := getLogger("CreateClip")
+	log := getLogger("GetClip")
 	var clip Clip
 	err := httputils.Get(log, clipURL(clipID), nil, &clip)
 	if err != nil {

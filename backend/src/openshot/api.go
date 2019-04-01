@@ -25,6 +25,12 @@ type Clips struct {
 	Results []Clip `json:"results"`
 }
 
+// Clips is the response data for /projects/{projectID}/exports/
+type Exports struct {
+	response
+	Results []Export `json:"results"`
+}
+
 // Project represents http://cloud.openshot.org/doc/api_endpoints.html#projects
 type Project struct {
 	URL            string      `json:"url"`
