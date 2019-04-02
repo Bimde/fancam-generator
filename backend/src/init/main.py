@@ -20,12 +20,12 @@ class VideoDetect:
     roleArn = 'arn:aws:iam::744292932026:role/RekognitionServiceRole'
     topicArn = 'arn:aws:sns:us-east-1:744292932026:AmazonRekognitionFullGroupVideos'
     bucket = 'fancamgenerator'
-    video = 'ITZY.mp4'
+    video = 'files/DALLA_DALLA.mp4'
     maxWidth = 0
 
     def main(self):
-        # self.triggerNewJob()
-        self.GetResultsPersons(self.jobId)
+        self.triggerNewJob()
+        #self.GetResultsPersons(self.jobId)
 
     def triggerNewJob(self):
         jobFound = False
@@ -38,91 +38,91 @@ class VideoDetect:
 
         print(response)
         print('Start Job Id: ' + response['JobId'])
-        dotLine = 0
-        while jobFound == False:
-            sqsResponse = sqs.receive_message(QueueUrl=self.queueUrl, MessageAttributeNames=['ALL'],
-                                          MaxNumberOfMessages=10)
+    #     dotLine = 0
+    #     while jobFound == False:
+    #         sqsResponse = sqs.receive_message(QueueUrl=self.queueUrl, MessageAttributeNames=['ALL'],
+    #                                       MaxNumberOfMessages=10)
 
-            if sqsResponse:
-                if 'Messages' not in sqsResponse:
-                    if dotLine<20:
-                        print('.', end='')
-                        dotLine=dotLine+1
-                    else:
-                        print()
-                        dotLine=0    
-                    sys.stdout.flush()
-                    continue
+    #         if sqsResponse:
+    #             if 'Messages' not in sqsResponse:
+    #                 if dotLine<20:
+    #                     print('.', end='')
+    #                     dotLine=dotLine+1
+    #                 else:
+    #                     print()
+    #                     dotLine=0    
+    #                 sys.stdout.flush()
+    #                 continue
 
-                print(sqsResponse)
-                for message in sqsResponse['Messages']:
-                    notification = json.loads(message['Body'])
-                    rekMessage = notification
-                    # rekMessage = json.loads(notification['Message'])
-                    print(rekMessage['JobId'])
-                    print(rekMessage['Status'])
-                    if str(rekMessage['JobId']) == response['JobId']:
-                        print('Matching Job Found:' + rekMessage['JobId'])
-                        jobFound = True
-                        #=============================================
-                        self.GetResultsPersons(rekMessage['JobId'])
-                        #=============================================
+    #             print(sqsResponse)
+    #             for message in sqsResponse['Messages']:
+    #                 notification = json.loads(message['Body'])
+    #                 rekMessage = notification
+    #                 # rekMessage = json.loads(notification['Message'])
+    #                 print(rekMessage['JobId'])
+    #                 print(rekMessage['Status'])
+    #                 if str(rekMessage['JobId']) == response['JobId']:
+    #                     print('Matching Job Found:' + rekMessage['JobId'])
+    #                     jobFound = True
+    #                     #=============================================
+    #                     self.GetResultsPersons(rekMessage['JobId'])
+    #                     #=============================================
 
-                        sqs.delete_message(QueueUrl=self.queueUrl,
-                                       ReceiptHandle=message['ReceiptHandle'])
-                    else:
-                        print("Job didn't match:" +
-                              str(rekMessage['JobId']) + ' : ' + str(response['JobId']))
-                    # Delete the unknown message. Consider sending to dead letter queue
-                    sqs.delete_message(QueueUrl=self.queueUrl,
-                                   ReceiptHandle=message['ReceiptHandle'])
+    #                     sqs.delete_message(QueueUrl=self.queueUrl,
+    #                                    ReceiptHandle=message['ReceiptHandle'])
+    #                 else:
+    #                     print("Job didn't match:" +
+    #                           str(rekMessage['JobId']) + ' : ' + str(response['JobId']))
+    #                 # Delete the unknown message. Consider sending to dead letter queue
+    #                 sqs.delete_message(QueueUrl=self.queueUrl,
+    #                                ReceiptHandle=message['ReceiptHandle'])
 
-        print('done')
+    #     print('done')
 
-    def foundWidth(self, width):
-        if width > self.maxWidth:
-            self.maxWidth = width
+    # def foundWidth(self, width):
+    #     if width > self.maxWidth:
+    #         self.maxWidth = width
 
-    def GetResultsPersons(self, jobId):
-        maxResults = 1000
-        paginationToken = ''
-        finished = False
-        count = 0
-        timestamps = set()
+    # def GetResultsPersons(self, jobId):
+    #     maxResults = 1000
+    #     paginationToken = ''
+    #     finished = False
+    #     count = 0
+    #     timestamps = set()
 
-        while finished == False:
-            response = self.rek.get_person_tracking(JobId=jobId,
-                                            MaxResults=maxResults,
-                                            NextToken=paginationToken)
+    #     while finished == False:
+    #         response = self.rek.get_person_tracking(JobId=jobId,
+    #                                         MaxResults=maxResults,
+    #                                         NextToken=paginationToken)
 
-            # print(response)
-            print(response['VideoMetadata']['Codec'])
-            print(str(response['VideoMetadata']['DurationMillis']))
-            print(response['VideoMetadata']['Format'])
-            print(response['VideoMetadata']['FrameRate'])
+    #         # print(response)
+    #         print(response['VideoMetadata']['Codec'])
+    #         print(str(response['VideoMetadata']['DurationMillis']))
+    #         print(response['VideoMetadata']['Format'])
+    #         print(response['VideoMetadata']['FrameRate'])
 
-            for personDetection in response['Persons']:
-                count += 1
-                person = personDetection['Person']
-                print('Index: ' + str(person['Index']))
-                print('Timestamp: ' + str(personDetection['Timestamp']))
-                timestamps.add(personDetection['Timestamp'])
-                if 'BoundingBox' in person:
-                    print ("      Bounding box")
-                    print ("        Top: " + str(person['BoundingBox']['Top']))
-                    print ("        Left: " + str(person['BoundingBox']['Left']))
-                    print ("        Width: " +  str(person['BoundingBox']['Width']))
-                    print ("        Height: " +  str(person['BoundingBox']['Height']))
-                    self.foundWidth(person['BoundingBox']['Width'])
-                print()
+    #         for personDetection in response['Persons']:
+    #             count += 1
+    #             person = personDetection['Person']
+    #             print('Index: ' + str(person['Index']))
+    #             print('Timestamp: ' + str(personDetection['Timestamp']))
+    #             timestamps.add(personDetection['Timestamp'])
+    #             if 'BoundingBox' in person:
+    #                 print ("      Bounding box")
+    #                 print ("        Top: " + str(person['BoundingBox']['Top']))
+    #                 print ("        Left: " + str(person['BoundingBox']['Left']))
+    #                 print ("        Width: " +  str(person['BoundingBox']['Width']))
+    #                 print ("        Height: " +  str(person['BoundingBox']['Height']))
+    #                 self.foundWidth(person['BoundingBox']['Width'])
+    #             print()
 
-            if 'NextToken' in response:
-                paginationToken = response['NextToken']
-            else:
-                finished = True
-        print("Number of PersonDetection objects: " + str(count))
-        print("Number of timestamps: " + str(len(timestamps)))
-        print("Max width: " + str(self.maxWidth))
+    #         if 'NextToken' in response:
+    #             paginationToken = response['NextToken']
+    #         else:
+    #             finished = True
+    #     print("Number of PersonDetection objects: " + str(count))
+    #     print("Number of timestamps: " + str(len(timestamps)))
+    #     print("Max width: " + str(self.maxWidth))
         
 if __name__ == "__main__":
 

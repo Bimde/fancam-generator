@@ -94,10 +94,9 @@ func process(notification *rekSNSNotification) error {
 	}
 
 	log.Info("Number of PersonDetection objects: ", totalCount)
-	log.Info("Number of People: ", noPeople)
-	log.WithField("index", tempPersonIndex).Info("Number of PersonDetection objects for index: ", count)
+	log.Info("Number of People: ", noPeople+1)
 
-	exports := TriggerAllExports()
+	exports := TriggerAllExportsTrimmed()
 
 	for _, e := range *exports {
 		log.WithField("Project", e.ProjectURL).Infof("Export: %s", e.URL)

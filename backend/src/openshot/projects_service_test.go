@@ -65,6 +65,16 @@ func TestProjectCreatedAndDeleted(t *testing.T) {
 	}
 }
 
+// func TestDeleteAllProjects(t *testing.T) {
+// 	projects := getProjects(t)
+// 	for projects.Count > 0 {
+// 		for _, project := range projects.Results {
+// 			deleteSampleProject(t, &project)
+// 		}
+// 		projects = getProjects(t)
+// 	}
+// }
+
 func projectsSetup() func() {
 	project = &Project{Name: "Sample Name"}
 	return projectsShutdown

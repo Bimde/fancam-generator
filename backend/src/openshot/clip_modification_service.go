@@ -17,11 +17,19 @@ func (o *OpenShot) SetScale(clip *Clip, scale int) {
 	clip.JSON["scale"] = scale
 }
 
-// AddPropertyPoint sets a JSON property of the provided clip object at the specified frame
+// AddPropertyPoint sets a JSON property of the provided clip object at the specified frame.
 // DOES NOT set value on server, requires call to UpdateClip
 func (o *OpenShot) AddPropertyPoint(clip *Clip, key string, frame int, value float64) {
 	property := o.GetProperty(clip, key)
 	property.Points = append(property.Points, Point{Co: Cord{X: frame, Y: value}, Interpolation: interpolationMode})
+	clip.JSON[key] = property
+}
+
+// ClearPropertyPoints clears all property point entires from clip for the specified
+// property key.
+func (o *OpenShot) ClearPropertyPoints(clip *Clip, key string) {
+	property := o.GetProperty(clip, key)
+	property.Points = []Point{}
 	clip.JSON[key] = property
 }
 
