@@ -11,14 +11,16 @@ import (
 )
 
 const (
-	projectName = "Test Project #1"
-	fileName    = "BOSS.mp4"
-	openshotURL = "http://cloud.openshot.org/"
-	scale       = 0
-	fps         = 30
-	height      = 1080
-	width       = 1920
-	frameWidth  = width / 5
+	projectName     = "Test Project #1"
+	defaultFileName = "BOSS.mp4"
+	deafultS3Folder = "files/"
+	deafultS3Bucket = "fancamgenerator"
+	openshotURL     = "http://cloud.openshot.org/"
+	scale           = 0
+	fps             = 30
+	height          = 1080
+	width           = 1920
+	frameWidth      = width / 5
 )
 
 var (
@@ -83,7 +85,7 @@ func triggerExport(index int64, export *openshot.Export, client *OpenShot) *open
 
 func newOpenShot() *OpenShot {
 	project := createProject(defaultProject())
-	file := createFile(project, defaultFile(fileName))
+	file := createFile(project, defaultFile())
 	clip := createClip(project.ID, defaultClip(file, project))
 	return &OpenShot{project: project, file: file, clip: clip}
 }
@@ -152,8 +154,8 @@ func defaultProject() *openshot.Project {
 	}
 }
 
-func defaultFile(fileName string) *openshot.FileUploadS3 {
-	return openshot.CreateFileStruct(fileName)
+func defaultFile() *openshot.FileUploadS3 {
+	return openshot.CreateFileStruct(openshot.CreateFileS3InfoStruct(defaultFileName, deafultS3Folder, deafultS3Bucket))
 }
 
 func defaultClip(file *openshot.File, project *openshot.Project) *openshot.Clip {
