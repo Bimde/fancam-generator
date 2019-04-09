@@ -1,16 +1,19 @@
 package main
 
 import (
+	"config"
 	"fmt"
 	"math"
-	"openshot"
+
+	"github.com/Bimde/openshot-sdk-go/openshot"
 
 	log "github.com/sirupsen/logrus"
 )
 
 const (
 	projectName = "Test Project #1"
-	fileName    = "DALLA_DALLA.mp4"
+	fileName    = "BOSS.mp4"
+	openshotURL = "http://cloud.openshot.org/"
 	scale       = 0
 	fps         = 30
 	height      = 1080
@@ -24,7 +27,7 @@ var (
 )
 
 func init() {
-	openShot = openshot.New()
+	openShot = openshot.New(openshotURL, config.GetString(config.Username), config.GetString(config.Password))
 	clients = map[int64]*OpenShot{}
 }
 
@@ -50,7 +53,7 @@ func GetClient(ID int64) *OpenShot {
 func TriggerAllExports() *[]*openshot.Export {
 	exports := make([]*openshot.Export, len(clients))
 	for index, client := range clients {
-		exports[index] = triggerExport(index, deafultExport(client.project.ID), client)
+		exports[index] = triggerExport(index, deafultExport(client.project), client)
 	}
 	return &exports
 }
@@ -60,7 +63,7 @@ func TriggerAllExports() *[]*openshot.Export {
 func TriggerAllExportsTrimmed() *[]*openshot.Export {
 	exports := make([]*openshot.Export, len(clients))
 	for index, client := range clients {
-		export := deafultExport(client.project.ID)
+		export := deafultExport(client.project)
 		trim(export, client.clip)
 		exports[index] = triggerExport(index, export, client)
 	}
@@ -72,7 +75,7 @@ func triggerExport(index int64, export *openshot.Export, client *OpenShot) *open
 	export, err := client.createExport(export)
 	if err != nil {
 		log.WithField("index", index).Error("error exporting project ", err)
-		export = deafultExport(client.project.ID)
+		export = deafultExport(client.project)
 		export.URL = fmt.Sprintf("Export failed for projectID: %d, index: %d", client.project.ID, index)
 	}
 	return export
@@ -80,8 +83,8 @@ func triggerExport(index int64, export *openshot.Export, client *OpenShot) *open
 
 func newOpenShot() *OpenShot {
 	project := createProject(defaultProject())
-	file := createFile(project.ID, defaultFile(fileName))
-	clip := createClip(project.ID, defaultClip(file.ID, project.ID))
+	file := createFile(project, defaultFile(fileName))
+	clip := createClip(project.ID, defaultClip(file, project))
 	return &OpenShot{project: project, file: file, clip: clip}
 }
 
@@ -120,8 +123,8 @@ func createProject(project *openshot.Project) *openshot.Project {
 	return project
 }
 
-func createFile(projectID int, input *openshot.FileUploadS3) *openshot.File {
-	file, err := openShot.CreateFile(projectID, input)
+func createFile(project *openshot.Project, input *openshot.FileUploadS3) *openshot.File {
+	file, err := openShot.CreateFile(project, input)
 	if err != nil {
 		log.Panic("error creating file ", err)
 	}
@@ -153,12 +156,12 @@ func defaultFile(fileName string) *openshot.FileUploadS3 {
 	return openshot.CreateFileStruct(fileName)
 }
 
-func defaultClip(fileID int, projectID int) *openshot.Clip {
-	return openshot.CreateClipStruct(fileID, projectID)
+func defaultClip(file *openshot.File, project *openshot.Project) *openshot.Clip {
+	return openshot.CreateClipStruct(file, project)
 }
 
-func deafultExport(projectID int) *openshot.Export {
-	o := openshot.CreateExportStruct(projectID)
+func deafultExport(project *openshot.Project) *openshot.Export {
+	o := openshot.CreateExportStruct(project)
 	o.JSON["width"] = frameWidth
 	return o
 }
