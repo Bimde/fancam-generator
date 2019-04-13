@@ -5,4 +5,4 @@ Generating videos focused on a single person from videos that contain multiple p
 
 ![Diagram](https://raw.githubusercontent.com/Bimde/FancamGenerator/master/diagrams/fancam-generator.png)
 
-Fun fact: this resulted in two offshoot projects: [OpenShot SDK for Go](https://github.com/Bimde/openshot-sdk-go/) and [httputils](https://github.com/Bimde/httputils)
+Fun fact: this resulted in two offshoot projects: an [OpenShot SDK for Go](https://github.com/Bimde/openshot-sdk-go/) and a [HTTP Client Library for Go](https://github.com/Bimde/httputils)
