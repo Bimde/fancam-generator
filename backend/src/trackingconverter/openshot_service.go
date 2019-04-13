@@ -86,7 +86,7 @@ func triggerExport(index int64, export *openshot.Export, client *OpenShot) *open
 func newOpenShot() *OpenShot {
 	project := createProject(defaultProject())
 	file := createFile(project, defaultFile())
-	clip := createClip(project.ID, defaultClip(file, project))
+	clip := createClip(project, defaultClip(file, project))
 	return &OpenShot{project: project, file: file, clip: clip}
 }
 
@@ -101,7 +101,7 @@ func (o *OpenShot) saveClip() error {
 }
 
 func (o *OpenShot) createExport(export *openshot.Export) (*openshot.Export, error) {
-	export, err := openShot.CreateExport(o.project.ID, export)
+	export, err := openShot.CreateExport(o.project, export)
 	if err != nil {
 		return nil, err
 	}
@@ -134,8 +134,8 @@ func createFile(project *openshot.Project, input *openshot.FileUploadS3) *opensh
 }
 
 // createClip creates a clip uses openshot, sets scale and clears LocationX
-func createClip(projectID int, input *openshot.Clip) *openshot.Clip {
-	clip, err := openShot.CreateClip(projectID, input)
+func createClip(project *openshot.Project, input *openshot.Clip) *openshot.Clip {
+	clip, err := openShot.CreateClip(project, input)
 	if err != nil {
 		log.Panic("error creating clip ", err)
 	}
@@ -163,7 +163,7 @@ func defaultClip(file *openshot.File, project *openshot.Project) *openshot.Clip 
 }
 
 func deafultExport(project *openshot.Project) *openshot.Export {
-	o := openshot.CreateExportStruct(project)
+	o := openshot.CreateDefaultExportStruct(project)
 	o.JSON["width"] = frameWidth
 	return o
 }

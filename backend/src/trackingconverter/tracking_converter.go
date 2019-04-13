@@ -15,10 +15,9 @@ import (
 )
 
 const (
-	awsRegion       = "us-east-1"
-	functionName    = "tracking_converter"
-	tempPersonIndex = 1
-	loggingName     = "lambda"
+	awsRegion    = "us-east-1"
+	functionName = "tracking_converter"
+	loggingName  = "lambda"
 )
 
 var svc *rekognition.Rekognition
