@@ -1,3 +1,5 @@
+github.com/Bimde/fancam-generator/config v0.0.0-20190428124908-1955f06a244d h1:zmV6FqNe1SvFFMaGCmWGTCB7urRs+2JQu4R4/jHZAHY=
+github.com/Bimde/fancam-generator/config v0.0.0-20190428124908-1955f06a244d/go.mod h1:1JsUDE6BFKqhujFgf3WDAKLjjmuijatlnCQFFFbTuSs=
 github.com/Bimde/httputils v0.0.0-20190413154510-a18d71744d12 h1:UR6NO7nO9Xb8oJRNLGfyju8iCsobxcS3DSvKBmWkZcY=
 github.com/Bimde/httputils v0.0.0-20190413154510-a18d71744d12/go.mod h1:w3Tyk6lJIAxGnKeYh8GU6RNdHyemgk77zac9zI6HLgM=
 github.com/Bimde/openshot-sdk-go v0.0.0-20190416182809-1bf2fcc6b3ab h1:h8uR8d9gDeIXrRaUw4RAM3USKHynswcMIiviKegpxns=

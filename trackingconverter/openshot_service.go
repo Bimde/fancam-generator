@@ -1,9 +1,10 @@
 package main
 
 import (
-	"config"
 	"fmt"
 	"math"
+
+	"github.com/Bimde/fancam-generator/config"
 
 	"github.com/Bimde/openshot-sdk-go/openshot"
 
