@@ -11,10 +11,10 @@ import (
 
 // Rek job IDs -- these are uppercase to match the file names
 const (
-	DALLA_DALLA = "014b59c95c350f695c50531e44f73c564e6d281261b71eb844ec460d867b042b"
-	IDOL        = "1e9e70a679024b396e5b8145ba3b6f69a17a6e82810b268793d8df256994c4a4"
-	LATATA      = "b29b5fb116940d3328144d2f535067743d2a820fb8aa8d914977e4fed5993ab6"
-	BOSS        = "f3cfae338f083bc01d1e074ceaa09665af8417e5d7eaa181b68372c96bcb5790"
+	DALLA_DALLA = "23ad7dce2baa000b3a29c1226d08e3eeca5338476e3ac95a149ddf25767abf1f"
+	IDOL        = "_"
+	LATATA      = "_"
+	BOSS        = "acda4cfe4311f4dd0b18b4f1cb81109cf74e5b8a5676996f1ca8b36e6a9ecf26"
 )
 
 func TestProcess(t *testing.T) {

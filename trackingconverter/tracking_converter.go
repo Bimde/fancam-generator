@@ -65,9 +65,6 @@ func process(notification *rekSNSNotification) error {
 				noPeople = *person.Index
 			}
 
-			// if person == nil {
-			// 	continue
-			// }
 			count++
 			log.Printf("Person (index=%d)", *person.Index)
 			log.Println("	Timestamp: ", *p.Timestamp)

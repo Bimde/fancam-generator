@@ -5,7 +5,6 @@ import (
 	"math"
 
 	"github.com/Bimde/fancam-generator/config"
-
 	"github.com/Bimde/openshot-sdk-go/openshot"
 
 	log "github.com/sirupsen/logrus"
@@ -13,7 +12,7 @@ import (
 
 const (
 	projectName     = "Test Project #1"
-	defaultFileName = "BOSS.mp4"
+	defaultFileName = "DALLA_DALLA.mp4"
 	deafultS3Folder = "files/"
 	deafultS3Bucket = "fancamgenerator"
 	openshotURL     = "http://cloud.openshot.org/"
