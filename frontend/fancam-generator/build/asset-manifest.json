@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/fancam-generator/static/css/main.2cce8147.chunk.css",
+    "main.js": "/fancam-generator/static/js/main.26843609.chunk.js",
+    "main.js.map": "/fancam-generator/static/js/main.26843609.chunk.js.map",
+    "runtime~main.js": "/fancam-generator/static/js/runtime~main.aea3702f.js",
+    "runtime~main.js.map": "/fancam-generator/static/js/runtime~main.aea3702f.js.map",
+    "static/js/2.b41502e9.chunk.js": "/fancam-generator/static/js/2.b41502e9.chunk.js",
+    "static/js/2.b41502e9.chunk.js.map": "/fancam-generator/static/js/2.b41502e9.chunk.js.map",
+    "index.html": "/fancam-generator/index.html",
+    "precache-manifest.10b0832a04d6d55bce01e68673e461c7.js": "/fancam-generator/precache-manifest.10b0832a04d6d55bce01e68673e461c7.js",
+    "service-worker.js": "/fancam-generator/service-worker.js",
+    "static/css/main.2cce8147.chunk.css.map": "/fancam-generator/static/css/main.2cce8147.chunk.css.map",
+    "static/media/logo.svg": "/fancam-generator/static/media/logo.5d5d9eef.svg"
+  }
+}
