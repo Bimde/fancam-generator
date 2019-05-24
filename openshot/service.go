@@ -4,7 +4,7 @@ package openshot
 import (
 	"fmt"
 
-	"github.com/Bimde/httputils"
+	"github.com/Bimde/fancam-generator/httputils"
 	log "github.com/sirupsen/logrus"
 )
 
