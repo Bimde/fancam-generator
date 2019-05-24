@@ -5,7 +5,7 @@ import (
 	"math"
 
 	"github.com/Bimde/fancam-generator/config"
-	"github.com/Bimde/openshot-sdk-go/openshot"
+	"github.com/Bimde/fancam-generator/openshot"
 
 	log "github.com/sirupsen/logrus"
 )

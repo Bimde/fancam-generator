@@ -1,4 +1,6 @@
 github.com/Bimde/fancam-generator v0.0.0-20190524141321-0b35ce3802db h1:V6vyqWzfH6GTHHbi3t2JmsHAYAVjZlbbK8SxC00FdTQ=
+github.com/Bimde/fancam-generator/httputils v0.0.0-20190524180417-34dec234d22c h1:/GXLSbKk8GYQYRysuc5r17dYLcwrSweKf7Zf7MHyfAo=
+github.com/Bimde/fancam-generator/httputils v0.0.0-20190524180417-34dec234d22c/go.mod h1:I5wV/Zu5fyLmSOf9XkbSKqREscdgRI0bD98XVIWFpgw=
 github.com/Bimde/httputils v0.0.0-20190413154510-a18d71744d12 h1:UR6NO7nO9Xb8oJRNLGfyju8iCsobxcS3DSvKBmWkZcY=
 github.com/Bimde/httputils v0.0.0-20190413154510-a18d71744d12/go.mod h1:w3Tyk6lJIAxGnKeYh8GU6RNdHyemgk77zac9zI6HLgM=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

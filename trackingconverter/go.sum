@@ -1,5 +1,10 @@
+github.com/Bimde/fancam-generator v0.0.0-20190524141321-0b35ce3802db h1:V6vyqWzfH6GTHHbi3t2JmsHAYAVjZlbbK8SxC00FdTQ=
 github.com/Bimde/fancam-generator/config v0.0.0-20190428124908-1955f06a244d h1:zmV6FqNe1SvFFMaGCmWGTCB7urRs+2JQu4R4/jHZAHY=
 github.com/Bimde/fancam-generator/config v0.0.0-20190428124908-1955f06a244d/go.mod h1:1JsUDE6BFKqhujFgf3WDAKLjjmuijatlnCQFFFbTuSs=
+github.com/Bimde/fancam-generator/httputils v0.0.0-20190524180417-34dec234d22c h1:/GXLSbKk8GYQYRysuc5r17dYLcwrSweKf7Zf7MHyfAo=
+github.com/Bimde/fancam-generator/httputils v0.0.0-20190524180417-34dec234d22c/go.mod h1:I5wV/Zu5fyLmSOf9XkbSKqREscdgRI0bD98XVIWFpgw=
+github.com/Bimde/fancam-generator/openshot v0.0.0-20190524180417-34dec234d22c h1:kb8UVd8qQBxJlY1p8ks2BP5UOU9FO4WgzKWZRMwpsgY=
+github.com/Bimde/fancam-generator/openshot v0.0.0-20190524180417-34dec234d22c/go.mod h1:p6cnt4FD/mlxlU5rJyqf8Jmq2kh5FP0W4yXViecDZwo=
 github.com/Bimde/httputils v0.0.0-20190413154510-a18d71744d12 h1:UR6NO7nO9Xb8oJRNLGfyju8iCsobxcS3DSvKBmWkZcY=
 github.com/Bimde/httputils v0.0.0-20190413154510-a18d71744d12/go.mod h1:w3Tyk6lJIAxGnKeYh8GU6RNdHyemgk77zac9zI6HLgM=
 github.com/Bimde/openshot-sdk-go v0.0.0-20190416182809-1bf2fcc6b3ab h1:h8uR8d9gDeIXrRaUw4RAM3USKHynswcMIiviKegpxns=
@@ -38,6 +43,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/sirupsen/logrus v1.4.1 h1:GL2rEmy6nsikmW0r8opw9JIRScdMF5hA8cOYLH7In1k=
 github.com/sirupsen/logrus v1.4.1/go.mod h1:ni0Sbl8bgC9z8RoU9G6nDWqqs/fq4eDPysMBDgk/93Q=
+github.com/sirupsen/logrus v1.4.2 h1:SPIRibHv4MatM3XXNO2BJeFLZwZ2LvZgfQ5+UNI2im4=
+github.com/sirupsen/logrus v1.4.2/go.mod h1:tLMulIdttU9McNUspp0xgXVQah82FyeX6MwdIuYE2rE=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1w=
@@ -52,6 +59,7 @@ golang.org/x/sys v0.0.0-20180905080454-ebe1bf3edb33/go.mod h1:STP8DvDyc/dI5b8T5h
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223 h1:DH4skfRX4EBpamg7iV4ZlCpblAHI6s6TDM39bFZumv8=
 golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
+golang.org/x/sys v0.0.0-20190422165155-953cdadca894/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20190507160741-ecd444e8653b h1:ag/x1USPSsqHud38I9BAC88qdNLDHHtQ4mlgQIZPPNA=
 golang.org/x/sys v0.0.0-20190507160741-ecd444e8653b/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
