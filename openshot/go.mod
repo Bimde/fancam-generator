@@ -1,0 +1,9 @@
+module "https://github.com/Bimde/fancam-generator/openshot"
+
+go 1.12
+
+require (
+	github.com/Bimde/httputils v0.0.0-20190413154510-a18d71744d12
+	github.com/mitchellh/mapstructure v1.1.2
+	github.com/sirupsen/logrus v1.4.2
+)
