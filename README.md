@@ -1,4 +1,7 @@
 [![GoDoc](https://godoc.org/github.com/Bimde/fancam-generator?status.svg)](https://godoc.org/github.com/Bimde/fancam-generator)
+[![Build Status](https://travis-ci.com/Bimde/fancam-generator.svg?branch=master)](https://travis-ci.com/Bimde/fancam-generator)
+[![codecov](https://codecov.io/gh/Bimde/fancam-generator/branch/master/graph/badge.svg)](https://codecov.io/gh/Bimde/fancam-generator)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Bimde/fancam-generator)](https://goreportcard.com/report/github.com/Bimde/fancam-generator)
 
 # Fancam Generator
 Generating videos focused on a single person from videos that contain multiple people. Check out generated videos on [this youtube channel](https://www.youtube.com/channel/UCbk65m7iJXRcmoVC8NgNkEg)!
