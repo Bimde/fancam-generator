@@ -12,7 +12,7 @@ import (
 
 // Rek job IDs -- these are uppercase to match the file names
 const (
-	prod        = true
+	prod        = false
 	DALLA_DALLA = "23ad7dce2baa000b3a29c1226d08e3eeca5338476e3ac95a149ddf25767abf1f"
 	IDOL        = "_"
 	LATATA      = "_"
