@@ -12,6 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/rekognition"
+	"github.com/aws/aws-sdk-go/service/sns"
 )
 
 const (
@@ -20,7 +21,10 @@ const (
 	loggingName  = "lambda"
 )
 
-var svc *rekognition.Rekognition
+var (
+	svc *rekognition.Rekognition
+	topic *sns.SNS
+)
 
 type responseBody struct {
 	Response string `json:"response"`
@@ -41,6 +45,7 @@ func process(notification *rekSNSNotification) error {
 		count           = 0
 		noPeople        = int64(0)
 	)
+	log.WithField("JobID", notification.JobID).Infof("Starting processing")
 	for !finished {
 		x := rekognition.GetPersonTrackingInput{
 			JobId:      aws.String(notification.JobID),
@@ -52,7 +57,7 @@ func process(notification *rekSNSNotification) error {
 			return err
 		}
 
-		log.Info(results.VideoMetadata)
+		log.Debug(results.VideoMetadata)
 
 		for _, p := range results.Persons {
 			totalCount++
@@ -66,8 +71,8 @@ func process(notification *rekSNSNotification) error {
 			}
 
 			count++
-			log.Printf("Person (index=%d)", *person.Index)
-			log.Println("	Timestamp: ", *p.Timestamp)
+			log.Debugf("Person (index=%d)", *person.Index)
+			log.Debug("	Timestamp: ", *p.Timestamp)
 
 			boundingBox := person.BoundingBox
 			if boundingBox == nil {
@@ -75,11 +80,11 @@ func process(notification *rekSNSNotification) error {
 			}
 
 			GetClient(*person.Index).AddTrackingFrame(*p.Timestamp, *boundingBox.Width, *boundingBox.Left)
-			log.Println("	Bounding Box")
-			log.Printf("		Top: %f", *boundingBox.Top)
-			log.Printf("		Left: %f", *boundingBox.Left)
-			log.Printf("		Width: %f", *boundingBox.Width)
-			log.Printf("		Height: %f", *boundingBox.Height)
+			log.Debug("	Bounding Box")
+			log.Debugf("		Top: %f", *boundingBox.Top)
+			log.Debugf("		Left: %f", *boundingBox.Left)
+			log.Debugf("		Width: %f", *boundingBox.Width)
+			log.Debugf("		Height: %f", *boundingBox.Height)
 		}
 
 		if results.NextToken == nil {
@@ -93,7 +98,8 @@ func process(notification *rekSNSNotification) error {
 	log.Info("Number of People: ", noPeople+1)
 
 	exports := TriggerAllExportsTrimmed()
-
+	NotifyExportCompletion(exports, nil)
+	
 	for _, e := range *exports {
 		log.WithField("Project", e.ProjectURL).Infof("Export: %s", e.URL)
 	}
@@ -107,8 +113,8 @@ func handle(ctx context.Context, snsEvent events.SNSEvent) (events.APIGatewayPro
 	log.Info("context ", ctx)
 	headers := map[string]string{"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"}
 
-	var notification *rekSNSNotification
-	jsonParseError := json.Unmarshal([]byte(snsEvent.Records[0].SNS.Message), notification)
+	var notification rekSNSNotification
+	jsonParseError := json.Unmarshal([]byte(snsEvent.Records[0].SNS.Message), &notification)
 	if jsonParseError != nil {
 		log.Error(jsonParseError)
 		return events.APIGatewayProxyResponse{500, headers, nil, "Internal Server Error", false}, nil
@@ -116,12 +122,15 @@ func handle(ctx context.Context, snsEvent events.SNSEvent) (events.APIGatewayPro
 
 	log.Info("SNS event received: ", notification)
 
-	process(notification)
+	err := process(&notification)
+	if err != nil {
+		log.Error("Error processing event: ", err)
+		return events.APIGatewayProxyResponse{500, headers, nil, "Internal Server Error", false}, nil
+	}
 
 	code := 200
 
-	// TODO change response
-	response, jsonBuildError := json.Marshal(responseBody{Response: "TODO"})
+	response, jsonBuildError := json.Marshal(responseBody{Response: "Processing Successful"})
 	if jsonBuildError != nil {
 		log.Error(jsonBuildError)
 		response = []byte("Internal Server Error")
@@ -136,6 +145,7 @@ func main() {
 		Region: aws.String(awsRegion)},
 	)
 	svc = rekognition.New(session)
+	topic = sns.New(session)
 
 	log := getLogger("main")
 
